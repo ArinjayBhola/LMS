@@ -10,7 +10,6 @@ const layout = async ({
   children: React.ReactNode;
 }>) => {
   const session = await getServerSession(authOptions);
-  console.log(session);
   if (!session?.user) redirect("/login");
   return (
     <div className="grid grid-cols-12">

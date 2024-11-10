@@ -1,22 +1,34 @@
 "use client";
-import { signIn } from "next-auth/react";
-import Link from "next/link";
-import { useState } from "react";
+import { getSession, signIn } from "next-auth/react";
+import { redirect } from "next/navigation";
+import React, { useState } from "react";
+import Eye from "./Eye";
+import HideEye from "./HideEye";
 
 const Login = () => {
   const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("Student");
+  const [isSelected, setIsSelected] = useState(false);
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const auth = await signIn("credentials", {
       redirect: false,
       firstName,
-      lastName,
       email,
+      password,
+      role,
     });
-    if (auth?.ok) <Link href={"/"} />;
+    if (auth?.ok) {
+      const session = await getSession();
+      if (session?.user?.isNewUser) {
+        redirect("/completeprofile");
+      } else {
+        redirect("/");
+      }
+    }
   };
 
   return (
@@ -30,24 +42,14 @@ const Login = () => {
         </h2>
         <div className="mb-4">
           <label className="block mb-1 text-sm font-medium text-gray-600">
-            First Name
+            Name
           </label>
           <input
             type="text"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
             required
-            className="w-full px-4 py-2 text-gray-700 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block mb-1 text-sm font-medium text-gray-600">
-            Last Name
-          </label>
-          <input
-            type="text"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
+            placeholder="Name"
             className="w-full px-4 py-2 text-gray-700 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
@@ -59,15 +61,50 @@ const Login = () => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
             required
             className="w-full px-4 py-2 text-gray-700 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
+        <div className="mb-4 relative">
+          <label className="block mb-1 text-sm font-medium text-gray-600">
+            Password
+          </label>
+          <input
+            type={isSelected ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            required
+            className="w-full px-4 py-2 text-gray-700 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-10"
+          />
+          <div
+            className="absolute top-9 right-0 flex items-center pr-3"
+            onClick={() => setIsSelected(!isSelected)}
+          >
+            {isSelected ? <Eye /> : <HideEye />}
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <label className="block mb-1 text-sm font-medium text-gray-600">
+            Role
+          </label>
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            className="w-full px-4 py-2 text-gray-700 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="Student">Student</option>
+            <option value="Teacher">Teacher</option>
+          </select>
+        </div>
+
         <button
           type="submit"
           className="w-full py-2 mt-4 text-white bg-indigo-500 rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75"
         >
-          Sign In
+          Submit
         </button>
       </form>
     </div>
