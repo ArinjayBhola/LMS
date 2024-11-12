@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import prisma from "@/prisma";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { CredentialsProps, CustomJWTProps, UserProps } from "./types";
+import { CredentialsProps } from "./types";
 
 export const authOptions = {
   providers: [
@@ -64,7 +65,7 @@ export const authOptions = {
     signIn: "/signin",
   },
   callbacks: {
-    async jwt({ token, user }: { token: CustomJWTProps; user: UserProps }) {
+    async jwt({ token, user }: any) {
       if (user) {
         token.firstName = user.firstName;
         token.role = user.role;
@@ -72,7 +73,7 @@ export const authOptions = {
       }
       return token;
     },
-    async session({ session, token }: { session: any; token: CustomJWTProps }) {
+    async session({ session, token }: any) {
       session.user = session.user;
       session.user.id = token.sub;
       session.user.name = token.firstName;

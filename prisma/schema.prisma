@@ -18,7 +18,7 @@ model Courses {
 
 model Teacher {
   id             String       @id @default(uuid())
-  joinDate       String?
+  joinDate       DateTime     @default(now())
   phoneNumber    String?
   bio            String?
   specialization String?
@@ -40,7 +40,6 @@ model Student {
 model Credentials {
   id        String   @id @default(uuid())
   firstName String
-  lastName  String?
   email     String   @unique
   password  String
   role      String?

@@ -11,12 +11,14 @@ const ProfileForm = ({ session }: { session: SessionProps }) => {
   const [highestQualification, setHighestQualification] = useState("");
   const [studentPhoneNo, setStudentPhoneNo] = useState("");
   const [bio, setBio] = useState("");
-  const [joiningDate, setJoiningDate] = useState("");
   const [teacherPhoneNo, setTeacherPhoneNo] = useState("");
   const [specialization, setSpecialization] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const [error, setError] = useState("");
 
   const submitForm = async () => {
+    setLoading(true);
     try {
       if (session.user.role === "Student") {
         await createStudentCred({
@@ -31,14 +33,18 @@ const ProfileForm = ({ session }: { session: SessionProps }) => {
         await createTeacherCred({
           specialization,
           teacherPhoneNo,
-          joiningDate,
           bio,
           session,
         });
         router.push("/");
       }
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An unknown error occurred");
+      }
+      setLoading(false);
     }
   };
   return (
@@ -78,18 +84,10 @@ const ProfileForm = ({ session }: { session: SessionProps }) => {
           <div className="flex flex-col w-1/2 space-y-4">
             <label className="text-gray-700 font-medium">
               Bio
-              <input
-                placeholder="Bio"
+              <textarea
+                placeholder="Tell about yourself"
                 className="border border-gray-300 rounded-md p-3 mt-1 w-full focus:outline-none focus:border-blue-500"
                 onChange={(e) => setBio(e.target.value)}
-              />
-            </label>
-            <label className="text-gray-700 font-medium">
-              Joining Date
-              <input
-                placeholder="Joining Date"
-                className="border border-gray-300 rounded-md p-3 mt-1 w-full focus:outline-none focus:border-blue-500"
-                onChange={(e) => setJoiningDate(e.target.value)}
               />
             </label>
             <label className="text-gray-700 font-medium">
@@ -111,11 +109,15 @@ const ProfileForm = ({ session }: { session: SessionProps }) => {
           </div>
         )}
         <button
+          disabled={loading}
           onClick={submitForm}
           className="text-white font-semibold rounded-md p-3 mt-1 w-1/2  bg-blue-500 hover:bg-blue-600"
         >
-          Submit
+          {loading ? "Submitting..." : "Submit"}
         </button>
+        <p className="font-semibold text-red-500 w-full p-2 text-center">
+          {error}
+        </p>
       </div>
       <div className="w-1/2 flex items-center justify-center">
         <Image

@@ -22,6 +22,7 @@ export interface CustomJWTProps extends JWT {
 }
 
 export interface SessionProps {
+  isNewUser: boolean;
   user: {
     name: string;
     email: string;

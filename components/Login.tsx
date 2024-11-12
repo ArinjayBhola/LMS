@@ -1,4 +1,5 @@
 "use client";
+import { SessionProps } from "@/lib/types";
 import { getSession, signIn } from "next-auth/react";
 import { redirect } from "next/navigation";
 import React, { useState } from "react";
@@ -11,8 +12,11 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("Student");
   const [isSelected, setIsSelected] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    setLoading(true);
     e.preventDefault();
     const auth = await signIn("credentials", {
       redirect: false,
@@ -23,12 +27,14 @@ const Login = () => {
     });
     if (auth?.ok) {
       const session = await getSession();
-      if (session?.user?.isNewUser) {
+      if (session && (session.user as SessionProps).isNewUser) {
         redirect("/completeprofile");
       } else {
         redirect("/");
       }
     }
+    setError(true);
+    setLoading(false);
   };
 
   return (
@@ -101,11 +107,17 @@ const Login = () => {
         </div>
 
         <button
+          disabled={loading}
           type="submit"
           className="w-full py-2 mt-4 text-white bg-indigo-500 rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75"
         >
-          Submit
+          {loading ? "Submitting..." : "Submit"}
         </button>
+        {error && (
+          <p className="font-semibold text-red-500 w-full p-2 text-center">
+            Error Signing In. Check your credentials and try again.
+          </p>
+        )}
       </form>
     </div>
   );
