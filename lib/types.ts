@@ -10,15 +10,16 @@ export interface CredentialsProps {
 
 export interface UserProps {
   firstName: string;
-  lastName: string;
+  email: string;
   role: string;
   isNewUser: boolean;
 }
 
 export interface CustomJWTProps extends JWT {
   firstName?: string | null;
-  lastName?: string | null;
+  email?: string | null;
   role?: string | null;
+  isNewUser?: boolean | null;
 }
 
 export interface SessionProps {

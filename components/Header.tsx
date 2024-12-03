@@ -4,7 +4,6 @@ import Button from "./Button";
 
 const Header = async () => {
   const session = await getServerSession(authOptions);
-  console.log(session);
   const formatName = (name: string) => {
     return name.split("")[0].toUpperCase();
   };
