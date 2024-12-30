@@ -1,13 +1,13 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-const isPublicRoute = createRouteMatcher(["/sign-in(.*)", "/sign-up(.*)"]);
+const isPublicRoute = createRouteMatcher(["/dashboard(.*)", "/create"]);
 
 export default clerkMiddleware(async (auth, request) => {
   if (request.nextUrl.pathname.startsWith("/api/inngest")) {
     return NextResponse.next();
   }
-  if (!isPublicRoute(request)) {
+  if (isPublicRoute(request)) {
     await auth.protect();
   }
 });

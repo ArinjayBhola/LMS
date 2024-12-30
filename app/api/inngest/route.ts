@@ -7,4 +7,3 @@ export const { GET, POST, PUT } = serve({
   client: inngest,
   functions: [helloWorld, createNewUser],
 });
-console.log("Inngest API route is running...");

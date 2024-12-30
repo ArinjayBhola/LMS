@@ -29,8 +29,7 @@ function Provider({ children }: { children: React.ReactNode }) {
     //     .returning({ id: USER_TABLE.id });
     //   console.log("newUser: ", newUser);
     // }
-    const result = await axios.post("/api/create-user", { user: user });
-    console.log("Provider.tsx result: ", result.data);
+    await axios.post("/api/create-user", { user: user });
   };
 
   if (user) {
