@@ -9,6 +9,7 @@ import { useUser } from "@clerk/nextjs";
 import { v4 as uuidv4 } from "uuid";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const Create = () => {
   const [step, setStep] = useState(0);
@@ -35,14 +36,14 @@ const Create = () => {
     setLoading(true);
 
     try {
-      const result = await axios.post("/api/generateCourseOutline", {
+      await axios.post("/api/generateCourseOutline", {
         courseId: courseId,
         ...formData,
         createdBy: user?.primaryEmailAddress?.emailAddress,
       });
       setLoading(false);
       router.replace("/dashboard");
-      console.log(result.data.result);
+      toast("Your course content is generating, click on refresh button");
     } catch (error) {
       console.log(error);
     }

@@ -1,7 +1,8 @@
 import { db } from "@/config/db";
 import { inngest } from "./client";
 import { eq } from "drizzle-orm";
-import { USER_TABLE } from "@/config/schema";
+import { CHAPTER_NOTES_TABLE, STUDY_MATERIAL_TABLE, USER_TABLE } from "@/config/schema";
+import { generateNotesModel } from "@/config/AiModel";
 
 export const helloWorld = inngest.createFunction(
   { id: "hello-world" },
@@ -25,16 +26,16 @@ export const createNewUser = inngest.createFunction(
       const data = await db
         .select()
         .from(USER_TABLE)
-        .where(eq(USER_TABLE.email, user?.primaryEmailAddress?.emailAddress || ""));
+        .where(eq(USER_TABLE.email, user?.primaryEmailAddress?.emailAddress));
 
-      const fullName = user?.fullName?.trim() || "Anonymous";
+      const fullName = user?.fullName?.trim();
 
       if (data.length == 0) {
         const newUser = await db
           .insert(USER_TABLE)
           .values({
             name: fullName,
-            email: user?.primaryEmailAddress?.emailAddress || "Anonymous",
+            email: user?.primaryEmailAddress?.emailAddress,
           })
           .returning({ id: USER_TABLE.id });
         return newUser;
@@ -44,4 +45,42 @@ export const createNewUser = inngest.createFunction(
     return "Success";
   },
   // Send welcome email notification
+);
+
+export const GenerateNotes = inngest.createFunction(
+  { id: "generate-notes" },
+  { event: "notes.generate" },
+  async ({ event, step }) => {
+    const { course } = event.data;
+
+    await step.run("Generate Chapter Notes", async () => {
+      const chapters = course?.courseLayout?.chapters;
+      let index = 0;
+      chapters.forEach(async (chapter: string) => {
+        const prompt = `Generate detailed exam material content for each chapter, ensuring all topic points are included in the content. Provide the content only in pure HTML format (do not use JSON, and do not include '<html>', '<head>', '<body>', or '<title>' tags). Output should be HTML only. Chapter: ${JSON.stringify(
+          chapter,
+        )}`;
+        const result = await generateNotesModel.sendMessage(prompt);
+        const aiResponse = result.response.text();
+
+        await db.insert(CHAPTER_NOTES_TABLE).values({
+          chapterId: index,
+          courseId: course?.courseId,
+          notes: aiResponse,
+        });
+        index = index + 1;
+      });
+      return "Completed";
+    });
+
+    await step.run("Update Course Status", async () => {
+      await db
+        .update(STUDY_MATERIAL_TABLE)
+        .set({
+          status: "Ready",
+        })
+        .where(eq(STUDY_MATERIAL_TABLE.courseId, course?.courseId));
+      return "Success";
+    });
+  },
 );
