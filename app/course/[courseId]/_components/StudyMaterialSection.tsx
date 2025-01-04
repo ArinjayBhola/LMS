@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from "react";
 import MaterialCardItem from "./MaterialCardItem";
 import axios from "axios";
-import Link from "next/link";
 
 interface StudyTypeContent {
   [key: string]: { length: number };
 }
+interface Course {
+  courseId: string;
+  courseLayout: {
+    chapters: {
+      course_title: string;
+      chapterTitle: string;
+    }[];
+  };
+}
 
-const StudyMaterialSection = ({ courseId }: { courseId: string }) => {
+const StudyMaterialSection = ({ courseId, course }: { courseId: string; course: Course }) => {
   const [studyTypeContent, setStudyTypeContent] = useState<StudyTypeContent>({});
   useEffect(() => {
     getNotes();
@@ -54,15 +62,13 @@ const StudyMaterialSection = ({ courseId }: { courseId: string }) => {
 
       <div className="grid grid-cols-2 md:grid-cols-4 mt-5 gap-5 m-3">
         {list.map((item, index) => (
-          <Link
-            href={`/course/${courseId}/${item.path}`}
-            key={index}>
-            <MaterialCardItem
-              key={index}
-              item={item}
-              studyTypeContent={studyTypeContent}
-            />
-          </Link>
+          <MaterialCardItem
+            key={index}
+            item={item}
+            studyTypeContent={studyTypeContent}
+            course={course}
+            refreshData={getNotes}
+          />
         ))}
       </div>
     </div>

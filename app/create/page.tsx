@@ -11,18 +11,18 @@ import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
+interface FormData {
+  studyType: string;
+  difficultyLevel: string;
+  topic: string;
+}
+
 const Create = () => {
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState([]);
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
-  interface FormData {
-    studyType: string;
-    difficultyLevel: string;
-    topic: string;
-  }
 
   const handleUserInput = (fieldName: keyof FormData, fieldValue: string) => {
     setFormData((prev) => ({

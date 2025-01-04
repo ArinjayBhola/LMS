@@ -65,5 +65,24 @@ export const generateNotesModel = model.startChat({
   ],
 });
 
-await courseOutlineModel.sendMessage("INSERT_INPUT_HERE");
-await generateNotesModel.sendMessage("INSERT_INPUT_HERE");
+export const generateStudyTypeContentModel = model.startChat({
+  generationConfig,
+  history: [
+    {
+      role: "user",
+      parts: [
+        {
+          text: "generate the flashcard on topic: Functional Programming in JavaScript, Asynchronous JavaScript & Promises, Deep Dive into Prototypes and Inheritance in JSON format with front back content. maximum 15",
+        },
+      ],
+    },
+    {
+      role: "model",
+      parts: [
+        {
+          text: '```json\n{\n  "flashcards": [\n    {\n      "front": "What are the core principles of functional programming?",\n      "back": "Immutability, Pure Functions, First-class functions, and Avoidance of side effects"\n    },\n    {\n      "front": "Define a pure function.",\n      "back": "A function that always returns the same output for the same input and has no side effects."\n    },\n     {\n      "front": "What are higher-order functions in JavaScript?",\n      "back": "Functions that either accept functions as arguments or return functions."\n    },\n     {\n      "front": "What is asynchronous JavaScript?",\n      "back": "JavaScript code that allows operations to be started and continue running without blocking the main thread"\n    },\n    {\n      "front": "What is a Promise in JavaScript?",\n      "back": "An object that represents the eventual completion (or failure) of an asynchronous operation."\n    },\n    {\n       "front": "What are the three states of a Promise?",\n       "back": "Pending, Fulfilled (Resolved), Rejected"\n    },\n        {\n      "front": "How do you handle a fulfilled Promise?",\n      "back": "Using the `.then()` method, which takes a callback function as an argument."\n    },\n    {\n      "front": "How do you handle a rejected Promise?",\n      "back": "Using the `.catch()` method, which takes a callback function as an argument."\n    },\n        {\n        "front":"What is the purpose of `.finally()` in Promises?",\n        "back": "To execute code regardless of whether the Promise was fulfilled or rejected. Used for cleanup actions."\n     },\n      {\n      "front": "What is a JavaScript prototype?",\n      "back": "A mechanism for objects to inherit properties and methods from another object"\n      },\n      {\n        "front": "How can you create a new object with a specific prototype?",\n        "back": "Using `Object.create(prototypeObject)`"\n      },\n     {\n       "front": "Explain the difference between prototype inheritance and classical inheritance.",\n      "back": "Prototype inheritance uses prototype chains to share properties. Classical uses classes"\n    },\n     {\n      "front": "What is the `__proto__` property in JavaScript?",\n      "back": "It is a deprecated way to access the internal prototype of an object. Use `Object.getPrototypeOf()` instead."\n     },\n      {\n      "front": "What is the purpose of `Object.getPrototypeOf()` in JavaScript?",\n      "back": "To get the prototype of an object."\n      },\n     {\n       "front": "Explain the concept of Prototypal Inheritance in JS.",\n       "back":"An object inherits properties and methods from its prototype object"\n     }\n  ]\n}\n```\n',
+        },
+      ],
+    },
+  ],
+});

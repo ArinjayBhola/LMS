@@ -1,6 +1,5 @@
 "use client";
 
-import Header from "@/app/dashboard/_components/Header";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -9,7 +8,7 @@ import StudyMaterialSection from "./_components/StudyMaterialSection";
 import ChaptersList from "./_components/ChaptersList";
 
 const Course = () => {
-  const { courseId } = useParams();
+  const { courseId } = useParams() as { courseId: string };
   const [course, setCourse] = useState({
     courseLayout: {
       courseTitle: "",
@@ -28,7 +27,10 @@ const Course = () => {
     <div>
       <div>
         <CourseIntroCard course={course} />
-        <StudyMaterialSection courseId={courseId} />
+        <StudyMaterialSection
+          courseId={courseId}
+          course={course}
+        />
         <ChaptersList course={course} />
       </div>
     </div>

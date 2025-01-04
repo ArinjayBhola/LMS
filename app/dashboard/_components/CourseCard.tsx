@@ -13,9 +13,15 @@ interface Course {
     courseSummary: string;
   };
   courseId: string;
+  createdAt: string;
 }
 
 const CourseCard = ({ course }: { course: Course }) => {
+  const date = (date: string) => {
+    const dateString = new Date(date).toDateString().split(" ").slice(1).join(" ");
+    return dateString;
+  };
+
   return (
     <div className="border rounded-lg shadow-md p-4">
       <div className="flex justify-between items-center">
@@ -25,7 +31,7 @@ const CourseCard = ({ course }: { course: Course }) => {
           width={50}
           height={50}
         />
-        <h2 className="text-[10px] rounded-full p-1 px-2 bg-primary text-white">Date</h2>
+        <h2 className="text-[12px] rounded-full p-1 px-2 bg-primary text-white">{date(course.createdAt)}</h2>
       </div>
       <h2 className="mt-3 font-medium text-lg">{course?.courseLayout?.courseTitle}</h2>
       <p className="text-xs line-clamp-2 text-gray-500 mt-2">{course?.courseLayout?.courseSummary}</p>
