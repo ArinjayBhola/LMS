@@ -1,7 +1,7 @@
 import Header from "@/app/dashboard/_components/Header";
 import React from "react";
 
-const layout = ({ children }) => {
+const layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
       <Header />

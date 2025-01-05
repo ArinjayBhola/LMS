@@ -86,3 +86,25 @@ export const generateStudyTypeContentModel = model.startChat({
     },
   ],
 });
+
+export const generateQuizModel = model.startChat({
+  generationConfig,
+  history: [
+    {
+      role: "user",
+      parts: [
+        {
+          text: "Generate quiz on topic: Flutter fundamentals, User Interface development, Basic app navigation with question and options along with correct answers in JSON format\n",
+        },
+      ],
+    },
+    {
+      role: "model",
+      parts: [
+        {
+          text: '```json\n{\n  "quizTitle": "Flutter Fundamentals: UI & Navigation",\n  "questions": [\n    {\n      "question": "What is Flutter primarily used for?",\n      "options": [\n        "Backend development",\n        "Creating native mobile applications",\n        "Creating only web applications",\n        "Machine learning models"\n      ],\n      "correctAnswer": "Creating native mobile applications"\n    },\n    {\n      "question": "Which programming language is used to build Flutter applications?",\n      "options": [\n        "Java",\n        "Kotlin",\n        "Dart",\n        "Swift"\n      ],\n      "correctAnswer": "Dart"\n    },\n    {\n       "question": "What is a \'Widget\' in Flutter?",\n       "options": [\n         "A server-side component",\n         "A tool for database management",\n         "A user interface element",\n         "A type of network protocol"\n       ],\n       "correctAnswer": "A user interface element"\n    },\n    {\n      "question": "Which widget is used to display an image in Flutter?",\n      "options": [\n        "Text",\n        "Icon",\n        "Image",\n        "Container"\n      ],\n      "correctAnswer": "Image"\n    },\n    {\n      "question": "What does the `Scaffold` widget provide?",\n      "options": [\n        "A basic layout structure for most screens with components like AppBar, Drawer, etc.",\n        "A way to perform background tasks",\n        "A way to manage user sessions",\n        "A widget for custom drawing"\n      ],\n       "correctAnswer": "A basic layout structure for most screens with components like AppBar, Drawer, etc."\n    },\n    {\n        "question": "Which widget is used to arrange child widgets in a row?",\n        "options": [\n          "Column",\n          "Row",\n          "Stack",\n          "ListView"\n        ],\n        "correctAnswer": "Row"\n    },\n     {\n       "question": "Which widget is used to arrange child widgets in a column?",\n        "options": [\n          "Row",\n          "Stack",\n          "Column",\n          "GridView"\n        ],\n       "correctAnswer": "Column"\n     },\n     {\n       "question": "What does the `Navigator` widget primarily handle in Flutter?",\n       "options": [\n         "Database transactions",\n         "Image processing",\n          "Screen transitions and navigation",\n          "Sound effects"\n        ],\n       "correctAnswer": "Screen transitions and navigation"\n     },\n    {\n      "question": "What is the purpose of `MaterialApp`?",\n      "options": [\n          "It\'s used for creating custom animations.",\n          "It’s the entry point for applications using Material Design.",\n          "It’s a widget for handling complex calculations.",\n          "It\'s a widget used for managing API calls."\n        ],\n        "correctAnswer": "It’s the entry point for applications using Material Design."\n    },\n    {\n        "question": "Which method is commonly used to navigate to a new screen in Flutter?",\n        "options": [\n            "push",\n            "pop",\n            "replace",\n            "all of the above"\n        ],\n        "correctAnswer": "all of the above"\n    }\n  ]\n}\n```\n',
+        },
+      ],
+    },
+  ],
+});

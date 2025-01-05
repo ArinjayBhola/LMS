@@ -62,8 +62,10 @@ const SideBar = () => {
         </div>
       </div>
       <div className="border p-3 bg-slate-100 rounded-lg absolute bottom-10 w-[85%]">
+        {/* <h2 className="text-lg mb-2">Available Credits: {5-totalCourse}</h2> */}
         <h2 className="text-lg mb-2">Available Credits: 5</h2>
         <Progress value={30} />
+        {/* <Progress value={(totalCourse/5)*100} /> */}
         <h2 className="text-sm">1 out of 5 credits used</h2>
         <Link
           href={"/dashboard/upgrade"}
