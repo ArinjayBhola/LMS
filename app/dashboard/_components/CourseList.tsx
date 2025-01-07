@@ -6,11 +6,14 @@ import React, { useEffect, useState } from "react";
 import CourseCard from "./CourseCard";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { setCourse } from "@/redux/slice/courseSlice";
 
 const CourseList = () => {
   const { user } = useUser();
   const [courseList, setCourseList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getCourseList();
@@ -23,6 +26,7 @@ const CourseList = () => {
         createdBy: user?.primaryEmailAddress?.emailAddress,
       });
       setCourseList(res.data.result);
+      dispatch(setCourse(res.data.result.length));
     } catch (error) {
       console.error("Error fetching course list:", error);
     } finally {

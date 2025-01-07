@@ -2,7 +2,18 @@
 
 import React, { useState } from "react";
 
-const QuizCardItem = ({ quiz, userSelectedOption }) => {
+interface QuizCardItemProps {
+  question: string;
+  options: string[];
+}
+
+const QuizCardItem = ({
+  quiz,
+  userSelectedOption,
+}: {
+  quiz: QuizCardItemProps;
+  userSelectedOption: (value: string) => void;
+}) => {
   const [selectedOption, setSelectedOption] = useState("");
 
   return (

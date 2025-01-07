@@ -10,6 +10,7 @@ import ChaptersList from "./_components/ChaptersList";
 const Course = () => {
   const { courseId } = useParams() as { courseId: string };
   const [course, setCourse] = useState({
+    courseId: "",
     courseLayout: {
       courseTitle: "",
       courseSummary: "",

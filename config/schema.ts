@@ -3,7 +3,7 @@ import { boolean, integer, json, pgTable, serial, text, timestamp, varchar } fro
 export const USER_TABLE = pgTable("users", {
   id: serial().primaryKey(),
   name: varchar().notNull(),
-  email: varchar().notNull(),
+  email: varchar().notNull().unique(),
   isMember: boolean().default(false),
 });
 
@@ -14,7 +14,7 @@ export const STUDY_MATERIAL_TABLE = pgTable("study_materials", {
   title: varchar(),
   difficultyLevel: varchar().default("Easy"),
   courseLayout: json(),
-  createdBy: varchar(),
+  createdBy: varchar().references(() => USER_TABLE.email),
   status: varchar().default("Generating"),
   createdAt: timestamp().defaultNow(),
 });

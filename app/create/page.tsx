@@ -64,15 +64,12 @@ const Create = () => {
         )}
       </div>
       <div className="flex justify-between w-full mt-32">
-        {step !== 0 ? (
-          <Button
-            variant={"outline"}
-            onClick={() => setStep(step - 1)}>
-            Previous
-          </Button>
-        ) : (
-          "-"
-        )}
+        <Button
+          variant={"outline"}
+          onClick={() => setStep(step - 1)}
+          disabled={step === 0}>
+          Previous
+        </Button>
         {step === 0 ? (
           <Button onClick={() => setStep(step + 1)}>Next</Button>
         ) : (

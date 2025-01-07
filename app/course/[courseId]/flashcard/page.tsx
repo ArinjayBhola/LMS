@@ -29,15 +29,11 @@ const Flashcard = () => {
         courseId: courseId,
         studyType: "Flashcard",
       });
-      setFlashcard(result?.data?.content?.flashcards);
+      setFlashcard(result?.data?.content?.flashcards || result?.data?.content);
     } catch (error) {
       console.error(error);
     }
   };
-
-  useEffect(() => {
-    console.log(flashcard);
-  }, [flashcard]);
 
   return (
     <div>

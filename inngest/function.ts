@@ -90,7 +90,7 @@ export const generateStudyTypeContent = inngest.createFunction(
   { event: "studyType.Content" },
 
   async ({ event, step }) => {
-    const { prompt, courseId, recordId, studyType } = event.data;
+    const { prompt, recordId, studyType } = event.data;
 
     const aiResult = await step.run("Generate Flash Card Content using AI", async () => {
       const result =
@@ -102,9 +102,9 @@ export const generateStudyTypeContent = inngest.createFunction(
     });
     // save result
 
-    const dbResult = await step.run("Save result to DB", async () => {
+    await step.run("Save result to DB", async () => {
       try {
-        const result = await db
+        await db
           .update(STUDY_TYPE_CONTENT_TABLE)
           .set({
             content: aiResult,

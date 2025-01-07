@@ -33,12 +33,10 @@ interface Course {
 const MaterialCardItem = ({
   item,
   studyTypeContent,
-  refreshData,
   course,
 }: {
   item: Item;
   studyTypeContent: StudyTypeContent;
-  refreshData: () => void;
   course: Course;
 }) => {
   const [loading, setLoading] = useState(false);
@@ -62,18 +60,17 @@ const MaterialCardItem = ({
     const result = await axios.post("/api/study-type", { courseId: course?.courseId, studyType: "ALL" });
     console.log(result);
 
-    // Update state to indicate content is ready
     setIsContentReady(true);
 
-    // refreshData()
     setLoading(false);
     toast("Your content is ready to view");
   };
 
   useEffect(() => {
-    // Sync local state with incoming props to handle dynamic updates.
     setIsContentReady(studyTypeContent?.[item.type] != null);
   }, [studyTypeContent, item.type]);
+  const questionAnswerButton = item.name;
+  const check = questionAnswerButton === "Question/Answer";
 
   return (
     <div className={`border shadow-md rounded-lg p-5 flex flex-col items-center ${!isContentReady && "grayscale"} `}>
@@ -96,7 +93,8 @@ const MaterialCardItem = ({
         <Button
           className="mt-3 w-full"
           variant={"outline"}
-          onClick={generateContent}>
+          onClick={generateContent}
+          disabled={check}>
           {loading && <RefreshCcw className="animate-spin" />}
           Generate
         </Button>

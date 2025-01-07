@@ -6,11 +6,15 @@ import React, { useEffect, useState } from "react";
 import StepProgress from "../_components/StepProgress";
 import QuizCardItem from "../_components/QuizCardItem";
 
+interface Question {
+  correctAnswer: string;
+}
+
 const Quiz = () => {
   const [quiz, setQuiz] = useState();
   const [stepCount, setStepCount] = useState(0);
-  const [isCorrectAnswer, setIsCorrectAnswer] = useState(null);
-  const [correctAns, setCorrectAns] = useState(null);
+  const [isCorrectAnswer, setIsCorrectAnswer] = useState<boolean | null>(null);
+  const [correctAns, setCorrectAns] = useState<string | null>(null);
   const { courseId } = useParams();
 
   useEffect(() => {
@@ -30,7 +34,7 @@ const Quiz = () => {
     setQuiz(result.data.content?.questions);
   };
 
-  const checkAnswer = (userAnswer, currentQuestion) => {
+  const checkAnswer = (userAnswer: string, currentQuestion: Question) => {
     if (userAnswer === currentQuestion.correctAnswer) {
       setIsCorrectAnswer(true);
       setCorrectAns(currentQuestion.correctAnswer);
@@ -45,7 +49,7 @@ const Quiz = () => {
       <StepProgress
         data={quiz}
         stepCount={stepCount}
-        setStepCount={(value) => setStepCount(value)}
+        setStepCount={(value: number) => setStepCount(value)}
       />
 
       <div>

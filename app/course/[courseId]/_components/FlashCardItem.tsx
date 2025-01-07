@@ -1,7 +1,20 @@
 import React from "react";
 import ReactCardFlip from "react-card-flip";
 
-const FlashCardItem = ({ isFlipped, handleClick, flashcard }) => {
+interface FlashCardItemProps {
+  back: string;
+  front: string;
+}
+
+const FlashCardItem = ({
+  isFlipped,
+  handleClick,
+  flashcard,
+}: {
+  isFlipped: boolean;
+  handleClick: () => void;
+  flashcard: FlashCardItemProps;
+}) => {
   return (
     <div className="flex items-center justify-center">
       <ReactCardFlip

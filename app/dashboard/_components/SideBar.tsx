@@ -7,9 +7,17 @@ import React from "react";
 import { usePathname } from "next/navigation";
 import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
+import { useSelector } from "react-redux";
+
+interface ReduxStore {
+  course: {
+    course: number;
+  };
+}
 
 const SideBar = () => {
   const pathname = usePathname();
+  const totalCourse = useSelector((app: ReduxStore) => app.course.course);
 
   const menuList = [
     {
@@ -62,11 +70,9 @@ const SideBar = () => {
         </div>
       </div>
       <div className="border p-3 bg-slate-100 rounded-lg absolute bottom-10 w-[85%]">
-        {/* <h2 className="text-lg mb-2">Available Credits: {5-totalCourse}</h2> */}
-        <h2 className="text-lg mb-2">Available Credits: 5</h2>
-        <Progress value={30} />
-        {/* <Progress value={(totalCourse/5)*100} /> */}
-        <h2 className="text-sm">1 out of 5 credits used</h2>
+        <h2 className="text-lg mb-2">Available Credits: {5 - totalCourse}</h2>
+        <Progress value={(totalCourse / 5) * 100} />
+        <h2 className="text-sm">{totalCourse} out of 5 credits used</h2>
         <Link
           href={"/dashboard/upgrade"}
           className="text-primary text-xs mt-3">

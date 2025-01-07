@@ -27,16 +27,17 @@ const ViewNotes = () => {
     notes && (
       <div>
         <div className="flex gap-5 items-center">
-          {stepCount == 0 ? (
+          {/* {stepCount == 0 ? (
             ""
-          ) : (
-            <Button
-              variant={"outline"}
-              size={"sm"}
-              onClick={() => setStepCount(stepCount - 1)}>
-              Previous
-            </Button>
-          )}
+          ) : ( */}
+          <Button
+            variant={"outline"}
+            size={"sm"}
+            onClick={() => setStepCount(stepCount - 1)}
+            disabled={stepCount == 0}>
+            Previous
+          </Button>
+          {/* )} */}
 
           {notes.map((_, index) => (
             <div
@@ -46,7 +47,8 @@ const ViewNotes = () => {
           <Button
             variant={"outline"}
             size={"sm"}
-            onClick={() => setStepCount(stepCount + 1)}>
+            onClick={() => setStepCount(stepCount + 1)}
+            disabled={notes.length === stepCount}>
             Next
           </Button>
         </div>

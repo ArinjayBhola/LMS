@@ -67,7 +67,6 @@ const StudyMaterialSection = ({ courseId, course }: { courseId: string; course: 
             item={item}
             studyTypeContent={studyTypeContent}
             course={course}
-            refreshData={getNotes}
           />
         ))}
       </div>
