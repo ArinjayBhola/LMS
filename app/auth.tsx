@@ -4,7 +4,7 @@ import { useUser } from "@clerk/nextjs";
 import { useEffect } from "react";
 import axios from "axios";
 
-function Provider({ children }: { children: React.ReactNode }) {
+function Auth({ children }: { children: React.ReactNode }) {
   const { user } = useUser();
 
   useEffect(() => {
@@ -21,4 +21,4 @@ function Provider({ children }: { children: React.ReactNode }) {
   return <div>{children}</div>;
 }
 
-export default Provider;
+export default Auth;

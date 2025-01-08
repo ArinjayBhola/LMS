@@ -1,11 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { setCourse } from "@/redux/slice/courseSlice";
 import axios from "axios";
 import { RefreshCcw } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
 interface Item {
@@ -41,6 +43,7 @@ const MaterialCardItem = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [isContentReady, setIsContentReady] = useState<boolean>(studyTypeContent?.[item.type] != null);
+  const dispatch = useDispatch();
 
   const generateContent = async () => {
     toast("Generating content");
@@ -57,14 +60,20 @@ const MaterialCardItem = ({
       chapters: chapters,
     });
 
-    const result = await axios.post("/api/study-type", { courseId: course?.courseId, studyType: "ALL" });
-    console.log(result);
-
     setIsContentReady(true);
 
     setLoading(false);
     toast("Your content is ready to view");
   };
+
+  useEffect(() => {
+    axios.post("/api/study-type", { courseId: course?.courseId, studyType: "ALL" }).then((result) => {
+      const notes = result?.data?.notes[0]?.finished;
+      const flashcard = result?.data?.flashcard?.finished;
+      const quiz = result?.data?.quiz?.finished;
+      dispatch(setCourse({ notes, flashcard, quiz }));
+    });
+  }, [course]);
 
   useEffect(() => {
     setIsContentReady(studyTypeContent?.[item.type] != null);

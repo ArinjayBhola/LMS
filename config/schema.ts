@@ -24,6 +24,7 @@ export const CHAPTER_NOTES_TABLE = pgTable("chapterNotes", {
   courseId: varchar().notNull(),
   chapterId: integer().notNull(),
   notes: text(),
+  finished: boolean().default(false),
 });
 
 export const STUDY_TYPE_CONTENT_TABLE = pgTable("studytTypeContent", {
@@ -32,4 +33,5 @@ export const STUDY_TYPE_CONTENT_TABLE = pgTable("studytTypeContent", {
   content: json(),
   type: varchar().notNull(),
   status: varchar().default("Generating"),
+  finished: boolean().default(false),
 });

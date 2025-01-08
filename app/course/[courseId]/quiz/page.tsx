@@ -50,6 +50,8 @@ const Quiz = () => {
         data={quiz}
         stepCount={stepCount}
         setStepCount={(value: number) => setStepCount(value)}
+        courseId={courseId}
+        studyType="Quiz"
       />
 
       <div>

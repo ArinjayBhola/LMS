@@ -12,7 +12,6 @@ interface Course {
 }
 
 const ChaptersList = ({ course }: { course: Course }) => {
-  console.log(course);
   const getEmoji = (chapter: string) => {
     const emoji = chapter.split(" ").pop();
     return emoji;

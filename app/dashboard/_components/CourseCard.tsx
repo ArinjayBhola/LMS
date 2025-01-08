@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
 import React from "react";
 import { RefreshCw } from "lucide-react";
@@ -35,10 +34,6 @@ const CourseCard = ({ course }: { course: Course }) => {
       </div>
       <h2 className="mt-3 font-medium text-lg">{course?.courseLayout?.courseTitle}</h2>
       <p className="text-xs line-clamp-2 text-gray-500 mt-2">{course?.courseLayout?.courseSummary}</p>
-
-      <div className="mt-3">
-        <Progress value={0} />
-      </div>
 
       <div className="mt-3 flex justify-end">
         {course.status === "Generating" ? (

@@ -1,47 +1,97 @@
 import { Button } from "@/components/ui/button";
-import React from "react";
+import axios from "axios";
+import { RefreshCw } from "lucide-react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { Note } from "../notes/page";
 
 const StepProgress = ({
   stepCount,
   setStepCount,
   data,
+  courseId,
+  studyType,
 }: {
   stepCount: number;
   setStepCount: (value: number) => void;
-  data: number[] | undefined;
+  data: Note[] | string[] | undefined;
+  courseId: string | string[] | undefined;
+  studyType: string;
 }) => {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const [flashcardData, setFlashcardData] = useState<Note[] | string[]>([]);
+
+  const updateFinishStatus = async () => {
+    setLoading(true);
+    try {
+      await axios.patch("/api/course-finish-status", {
+        courseId: courseId,
+        studyType: studyType,
+      });
+      router.push(`/course/${courseId}`);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (studyType === "Flashcard" && data) {
+      const newData = data.slice(0, -1);
+      setFlashcardData(newData);
+    }
+  }, [studyType, data]);
+
   return (
     <div className="flex gap-5 items-center">
-      <Button
-        variant={"outline"}
-        size={"sm"}
-        onClick={() => setStepCount(stepCount - 1)}
-        disabled={stepCount === 0}>
-        Previous
-      </Button>
+      {studyType === "Flashcard" ? (
+        ""
+      ) : (
+        <Button
+          variant={"outline"}
+          size={"sm"}
+          onClick={() => setStepCount(stepCount - 1)}
+          disabled={stepCount === 0}>
+          Previous
+        </Button>
+      )}
 
-      {data?.map((_, index: number) => (
-        <div
-          key={index}
-          className={`w-full h-2 rounded-full ${index < stepCount ? "bg-primary" : "bg-gray-200"}`}></div>
-      ))}
+      {studyType === "Flashcard"
+        ? flashcardData &&
+          flashcardData?.map((_, index: number) => (
+            <div
+              key={index}
+              className={`w-full h-2 rounded-full ${index < stepCount ? "bg-primary" : "bg-gray-200"}`}></div>
+          ))
+        : data &&
+          data?.map((_, index: number) => (
+            <div
+              key={index}
+              className={`w-full h-2 rounded-full ${index < stepCount ? "bg-primary" : "bg-gray-200"}`}></div>
+          ))}
 
-      <Button
-        variant={"outline"}
-        size={"sm"}
-        onClick={() => setStepCount(stepCount + 1)}
-        disabled={stepCount === data?.length}>
-        Next
-      </Button>
+      {studyType === "Flashcard" ? (
+        ""
+      ) : (
+        <Button
+          variant={"outline"}
+          size={"sm"}
+          onClick={() => setStepCount(stepCount + 1)}
+          disabled={stepCount === data?.length}>
+          Next
+        </Button>
+      )}
 
       {stepCount === data?.length && (
         <div className="absolute top-52 left-1/2 flex items-center gap-10 flex-col justify-center">
-          <h2>End of Quiz</h2>
+          <h2>End of {studyType}</h2>
           <Button
             variant={"default"}
             size={"default"}
-            onClick={() => setStepCount(0)}>
-            Finsh
+            onClick={updateFinishStatus}>
+            {loading ? <RefreshCw className="animate-spin" /> : "Finish"}
           </Button>
         </div>
       )}
