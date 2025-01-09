@@ -72,7 +72,7 @@ const SideBar = () => {
       <div className="border p-3 bg-slate-100 rounded-lg absolute bottom-10 w-[85%]">
         <h2 className="text-lg mb-2">Available Credits: {5 - totalCourse}</h2>
         <Progress value={(totalCourse / 5) * 100} />
-        <h2 className="text-sm">{totalCourse} out of 5 credits used</h2>
+        <h2 className="text-sm">{Number(totalCourse)} out of 5 credits used</h2>
         <Link
           href={"/dashboard/upgrade"}
           className="text-primary text-xs mt-3">
