@@ -18,8 +18,6 @@ export const createNewUser = inngest.createFunction(
   { event: "user.create" },
   async ({ event, step }) => {
     const { user } = event.data;
-    const WAIT_TIME = 3000;
-    await new Promise((resolve) => setTimeout(resolve, WAIT_TIME));
 
     // GET EVENT DATA
     await step.run("Check User and create new if not in DB", async () => {

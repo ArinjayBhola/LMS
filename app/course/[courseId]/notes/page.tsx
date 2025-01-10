@@ -21,7 +21,6 @@ const ViewNotes = () => {
     const result = await axios.post("/api/study-type", { courseId, studyType: "notes" });
     setNotes(result.data);
   };
-  console.log(notes);
   return (
     notes && (
       <div>

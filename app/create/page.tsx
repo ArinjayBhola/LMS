@@ -42,7 +42,7 @@ const Create = () => {
         createdBy: user?.primaryEmailAddress?.emailAddress,
       });
       setLoading(false);
-      router.replace("/dashboard");
+      router.push("/dashboard");
       toast("Your course content is generating, click on refresh button");
     } catch (error) {
       console.log(error);
