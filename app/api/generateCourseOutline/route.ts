@@ -1,7 +1,6 @@
 import { courseOutlineModel } from "@/config/AiModel";
 import { db } from "@/config/db";
 import { STUDY_MATERIAL_TABLE } from "@/config/schema";
-import { inngest } from "@/inngest/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -26,13 +25,6 @@ export async function POST(req: NextRequest) {
       difficultyLevel,
     })
     .returning();
-
-  await inngest.send({
-    name: "notes.generate",
-    data: {
-      course: dbResult[0],
-    },
-  });
 
   return NextResponse.json({ result: dbResult[0] });
 }

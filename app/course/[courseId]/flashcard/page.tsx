@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
 import StepProgress from "../_components/StepProgress";
-import { RefreshCw } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 const Flashcard = () => {
   const { courseId } = useParams();
@@ -110,7 +110,7 @@ const Flashcard = () => {
           className="absolute right-10 bottom-10 rounded-full px-4 p-5 shadow-2xl"
           size={"default"}
           onClick={updateFinishStatus}>
-          {loading ? <RefreshCw className="animate-spin" /> : "Finish"}
+          {loading ? <Loader2 className="animate-spin" /> : "Finish"}
         </Button>
       )}
     </div>

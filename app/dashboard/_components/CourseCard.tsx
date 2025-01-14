@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import React from "react";
-import { RefreshCw } from "lucide-react";
 import Link from "next/link";
 
 interface Course {
@@ -36,15 +35,9 @@ const CourseCard = ({ course }: { course: Course }) => {
       <p className="text-xs line-clamp-2 text-gray-500 mt-2">{course?.courseLayout?.courseSummary}</p>
 
       <div className="mt-3 flex justify-end">
-        {course.status === "Generating" ? (
-          <h2 className="text-sm p-1 px-2 rounded-full bg-gray-400 text-white flex gap-2 items-center">
-            <RefreshCw className="h-5 w-5 animate-spin" /> Generating...
-          </h2>
-        ) : (
-          <Link href={`/course/${course.courseId}`}>
-            <Button>View</Button>
-          </Link>
-        )}
+        <Link href={`/course/${course.courseId}`}>
+          <Button>View</Button>
+        </Link>
       </div>
     </div>
   );

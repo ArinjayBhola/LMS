@@ -1,12 +1,10 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import { setCourse } from "@/redux/slice/courseSlice";
 import axios from "axios";
-import { RefreshCcw } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
@@ -19,7 +17,7 @@ interface Item {
 }
 
 interface StudyTypeContent {
-  [key: string]: { length: number };
+  [key: string]: { length: number; finished?: boolean }[];
 }
 
 interface Course {
@@ -42,51 +40,56 @@ const MaterialCardItem = ({
   course: Course;
 }) => {
   const [loading, setLoading] = useState(false);
-  const [isContentReady, setIsContentReady] = useState<boolean>(studyTypeContent?.[item.type] != null);
   const dispatch = useDispatch();
+  const [isContentReady, setIsContentReady] = useState<boolean>(studyTypeContent?.[item.type] != null);
 
   const generateContent = async () => {
-    toast("Generating content");
+    toast("Generating content...");
     setLoading(true);
+    if (item.name === "Notes/ Chapters") {
+      await axios.post("/api/generate-notes", {
+        course: course,
+      });
+    } else {
+      let chapters = "";
+      course?.courseLayout?.chapters.forEach((chapter) => {
+        chapters = (chapter.course_title || chapter.chapterTitle) + "," + chapters;
+      });
 
-    let chapters = "";
-    course?.courseLayout?.chapters.forEach((chapter) => {
-      chapters = (chapter.course_title || chapter.chapterTitle) + "," + chapters;
-    });
+      await axios.post("/api/study-type-content", {
+        courseId: course?.courseId,
+        type: item.name,
+        chapters: chapters,
+      });
+    }
 
-    await axios.post("/api/study-type-content", {
-      courseId: course?.courseId,
-      type: item.name,
-      chapters: chapters,
-    });
+    await new Promise((resolve) => setTimeout(resolve, 7000));
 
     setIsContentReady(true);
-
     setLoading(false);
-    toast("Your content is ready to view");
+    toast.success("Your content is ready to view");
   };
 
   useEffect(() => {
-    axios.post("/api/study-type", { courseId: course?.courseId, studyType: "ALL" }).then((result) => {
-      const notes = result?.data?.notes[0]?.finished;
-      const flashcard = result?.data?.flashcard?.finished;
-      const quiz = result?.data?.quiz?.finished;
-      dispatch(setCourse({ notes, flashcard, quiz }));
-    });
-  }, [course]);
+    const notes = studyTypeContent?.notes && studyTypeContent?.notes[0]?.finished;
+    const flashcard = studyTypeContent?.flashcard && studyTypeContent?.flashcard?.finished;
+    const quiz = studyTypeContent?.quiz && studyTypeContent?.quiz?.finished;
+    dispatch(setCourse({ notes, flashcard, quiz }));
+  }, [studyTypeContent, dispatch]);
 
   useEffect(() => {
     setIsContentReady(studyTypeContent?.[item.type] != null);
   }, [studyTypeContent, item.type]);
+
   const questionAnswerButton = item.name;
   const check = questionAnswerButton === "Question/Answer";
 
   return (
-    <div className={`border shadow-md rounded-lg p-5 flex flex-col items-center ${!isContentReady && "grayscale"} `}>
+    <div className={`border shadow-md rounded-lg p-5 flex flex-col items-center ${!isContentReady && "grayscale"}`}>
       <h2
         className={`p-1 px-2 text-white rounded-full text-[15px] mb-3 ${
-          isContentReady ? "bg-green-500" : "grayscale"
-        } `}>
+          isContentReady ? "bg-green-500" : "bg-gray-300 text-black"
+        }`}>
         {isContentReady ? "Ready" : "Not Ready"}
       </h2>
 
@@ -104,14 +107,14 @@ const MaterialCardItem = ({
           variant={"outline"}
           onClick={generateContent}
           disabled={check}>
-          {loading && <RefreshCcw className="animate-spin" />}
-          Generate
+          {loading ? <Loader2 className="animate-spin" /> : "Generate"}
         </Button>
       ) : (
         <Link href={`/course/${course?.courseId}/${item.path}`}>
           <Button
             className="mt-3 w-full"
-            variant={"outline"}>
+            variant={"outline"}
+            onClick={() => {}}>
             View
           </Button>
         </Link>

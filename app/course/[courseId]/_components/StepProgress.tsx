@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-import { RefreshCw } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Note } from "../notes/page";
@@ -91,7 +91,7 @@ const StepProgress = ({
             variant={"default"}
             size={"default"}
             onClick={updateFinishStatus}>
-            {loading ? <RefreshCw className="animate-spin" /> : "Finish"}
+            {loading ? <Loader2 className="animate-spin" /> : "Finish"}
           </Button>
         </div>
       )}

@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
       .where(eq(STUDY_TYPE_CONTENT_TABLE.courseId, courseId));
 
     const result = {
-      notes: notes,
+      ...(notes.length > 0 && { notes }),
       flashcard: getContentList?.find((item) => item.type === "Flashcard"),
       quiz: getContentList?.find((item) => item.type === "Quiz"),
       qa: null,
