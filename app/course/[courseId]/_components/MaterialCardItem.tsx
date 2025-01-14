@@ -17,7 +17,10 @@ interface Item {
 }
 
 interface StudyTypeContent {
-  [key: string]: { length: number; finished?: boolean }[];
+  notes?: { length: number; finished?: boolean }[];
+  flashcard?: { finished?: boolean };
+  quiz?: { finished?: boolean };
+  [key: string]: { length?: number; finished?: boolean } | undefined;
 }
 
 interface Course {
