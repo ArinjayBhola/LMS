@@ -37,7 +37,7 @@ const CourseList = () => {
   return (
     <div className="mt-10">
       <h2 className="font-bold text-2xl flex justify-between items-center">
-        Your Study Material
+        {courseList.length === 0 ? "No course found. Create New Course" : "Your Study Material"}
         <Button
           variant={"outline"}
           className="border-primary text-primary"

@@ -41,9 +41,11 @@ const Create = () => {
         ...formData,
         createdBy: user?.primaryEmailAddress?.emailAddress,
       });
-      setLoading(false);
-      router.push("/dashboard");
-      toast("Your course content is generating, click on refresh button");
+      setTimeout(() => {
+        router.push("/dashboard");
+        setLoading(false);
+        toast("Your course content is generating, click on refresh button");
+      }, 10000);
     } catch (error) {
       console.log(error);
     }

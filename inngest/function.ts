@@ -1,8 +1,8 @@
 import { db } from "@/config/db";
 import { inngest } from "./client";
 import { eq } from "drizzle-orm";
-import { STUDY_TYPE_CONTENT_TABLE, USER_TABLE } from "@/config/schema";
-import { generateQuizModel, generateStudyTypeContentModel } from "@/config/AiModel";
+import { STUDY_MATERIAL_TABLE, STUDY_TYPE_CONTENT_TABLE, USER_TABLE } from "@/config/schema";
+import { courseOutlineModel, generateQuizModel, generateStudyTypeContentModel } from "@/config/AiModel";
 
 export const helloWorld = inngest.createFunction(
   { id: "hello-world" },
@@ -72,6 +72,40 @@ export const generateStudyTypeContent = inngest.createFunction(
           })
           .where(eq(STUDY_TYPE_CONTENT_TABLE.id, recordId));
         return "Data Inserted";
+      } catch (error) {
+        console.error("DB Error:", error);
+        throw error;
+      }
+    });
+  },
+);
+
+export const generateCourseOutline = inngest.createFunction(
+  { id: "generateCourse" },
+  { event: "course.generate" },
+  async ({ event, step }) => {
+    const { topic, courseId, courseType, createdBy, difficultyLevel, studyType } = event.data;
+
+    const aiResult = await step.run("Generate Course using AI", async () => {
+      const promt = `Generate a study material for ${topic} for ${courseType} and level of difficulty will be ${difficultyLevel} with summary of course, List of chapter along with summary and emoji icon for each chapter, topic list in each chapter, all result in JSON format`;
+      const result = await courseOutlineModel.sendMessage(promt);
+      const aiResponse = JSON.parse(result.response.text());
+      return aiResponse;
+    });
+
+    await step.run("Save result to DB", async () => {
+      try {
+        await db
+          .insert(STUDY_MATERIAL_TABLE)
+          .values({
+            courseLayout: aiResult,
+            title: topic,
+            courseId,
+            courseType: studyType,
+            createdBy,
+            difficultyLevel,
+          })
+          .returning();
       } catch (error) {
         console.error("DB Error:", error);
         throw error;
