@@ -48,11 +48,18 @@ const SideBar = () => {
         <h2 className="font-bold text-2xl">Easy Study</h2>
       </div>
       <div className="mt-10">
-        <Link
-          href={"/create"}
-          className="w-full">
-          <Button className="w-full">+ Create New</Button>
-        </Link>
+        {totalCourse <= 5 ? (
+          <div>
+            <h2 className="font-semibold text-xl">You have reached your limit</h2>
+            <p className="text-sm text-gray-500">Upgrade to create more course or delete course</p>
+          </div>
+        ) : (
+          <Link
+            href={"/create"}
+            className="w-full">
+            <Button className="w-full">+ Create New</Button>
+          </Link>
+        )}
 
         <div className="mt-5">
           {menuList.map((menu, index) => {
