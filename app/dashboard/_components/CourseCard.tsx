@@ -79,15 +79,11 @@ const CourseCard = ({ course, getCourseList }: { course: Course; getCourseList: 
                 onClick={() => setIsModalOpen(false)}>
                 Cancel
               </Button>
-              {isLoading ? (
-                <Loader className="animate-spin" />
-              ) : (
-                <Button
-                  variant="destructive"
-                  onClick={() => deleteCourse(course.courseId)}>
-                  Delete
-                </Button>
-              )}
+              <Button
+                variant="destructive"
+                onClick={() => deleteCourse(course.courseId)}>
+                {isLoading ? <Loader className="animate-spin" /> : "Delete"}
+              </Button>
             </div>
           </div>
         </div>
