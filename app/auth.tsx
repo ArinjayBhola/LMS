@@ -8,16 +8,15 @@ function Auth({ children }: { children: React.ReactNode }) {
   const { user } = useUser();
 
   useEffect(() => {
-    checkIsNewUser();
+    if (user) {
+      checkIsNewUser();
+    }
   }, [user]);
 
   const checkIsNewUser = async () => {
     await axios.post("/api/create-user", { user: user });
   };
 
-  if (user) {
-    checkIsNewUser();
-  }
   return <div>{children}</div>;
 }
 

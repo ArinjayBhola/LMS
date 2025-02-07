@@ -3,11 +3,13 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { LayoutDashboard, Shield, UserCircle } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
 import { useSelector } from "react-redux";
+import { useUser } from "@clerk/nextjs";
+import axios from "axios";
 
 interface ReduxStore {
   course: {
@@ -16,8 +18,25 @@ interface ReduxStore {
 }
 
 const SideBar = () => {
+  const [isPremium, setIsPremium] = useState(false);
   const pathname = usePathname();
   const totalCourse = useSelector((app: ReduxStore) => app.course.course);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const { user } = useUser();
+
+  useEffect(() => {
+    if (user?.primaryEmailAddress?.emailAddress) {
+      setUserEmail(user.primaryEmailAddress.emailAddress);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (!userEmail) return;
+
+    axios.get(`/api/get-user?email=${userEmail}`).then((res) => {
+      setIsPremium(res.data.result.isMember);
+    });
+  }, [userEmail]);
 
   const menuList = [
     {
@@ -47,8 +66,15 @@ const SideBar = () => {
         />
         <h2 className="font-bold text-2xl">Easy Study</h2>
       </div>
+
       <div className="mt-10">
-        {totalCourse <= 5 ? (
+        {isPremium ? (
+          <Link
+            href={"/create"}
+            className="w-full">
+            <Button className="w-full">+ Create New</Button>
+          </Link>
+        ) : totalCourse >= 5 ? (
           <div>
             <h2 className="font-semibold text-xl">You have reached your limit</h2>
             <p className="text-sm text-gray-500">Upgrade to create more course or delete course</p>
@@ -76,16 +102,18 @@ const SideBar = () => {
           })}
         </div>
       </div>
-      <div className="border p-3 bg-slate-100 rounded-lg absolute bottom-10 w-[85%]">
-        <h2 className="text-lg mb-2">Available Credits: {5 - totalCourse}</h2>
-        <Progress value={(totalCourse / 5) * 100} />
-        <h2 className="text-sm">{Number(totalCourse)} out of 5 credits used</h2>
-        <Link
-          href={"/dashboard/upgrade"}
-          className="text-primary text-xs mt-3">
-          Upgrade to create more
-        </Link>
-      </div>
+      {isPremium === false && (
+        <div className="border p-3 bg-slate-100 rounded-lg absolute bottom-10 w-[85%]">
+          <h2 className="text-lg mb-2">Available Credits: {5 - totalCourse}</h2>
+          <Progress value={(totalCourse / 5) * 100} />
+          <h2 className="text-sm">{Number(totalCourse)} out of 5 credits used</h2>
+          <Link
+            href={"/dashboard/upgrade"}
+            className="text-primary text-xs mt-3">
+            Upgrade to create more
+          </Link>
+        </div>
+      )}
     </div>
   );
 };

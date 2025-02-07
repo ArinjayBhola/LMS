@@ -52,6 +52,7 @@ const CourseList = () => {
               <CourseCard
                 course={course}
                 key={index}
+                getCourseList={getCourseList}
               />
             ))
           : [1, 2, 3].map((item, index) => (

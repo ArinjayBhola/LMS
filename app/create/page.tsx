@@ -32,6 +32,7 @@ const Create = () => {
   };
 
   const generateCourseOutline = async () => {
+    toast("Processing... This may take some time, please wait.", { closeButton: true, duration: 7000 });
     const courseId = uuidv4();
     setLoading(true);
 
@@ -45,7 +46,7 @@ const Create = () => {
         router.push("/dashboard");
         setLoading(false);
         toast("Your course content is generating, click on refresh button");
-      }, 10000);
+      }, 17000);
     } catch (error) {
       console.log(error);
     }
