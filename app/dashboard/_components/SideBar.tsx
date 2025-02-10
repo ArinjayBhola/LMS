@@ -4,12 +4,13 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { LayoutDashboard, Shield, UserCircle } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useUser } from "@clerk/nextjs";
-import axios from "axios";
+import { fetchUserData } from "@/redux/slice/userSlice";
+import { AppDispatch, RootState } from "@/redux/appStore";
 
 interface ReduxStore {
   course: {
@@ -23,6 +24,9 @@ const SideBar = () => {
   const totalCourse = useSelector((app: ReduxStore) => app.course.course);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const { user } = useUser();
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
+  const { data } = useSelector((store: RootState) => store.userData);
 
   useEffect(() => {
     if (user?.primaryEmailAddress?.emailAddress) {
@@ -31,12 +35,16 @@ const SideBar = () => {
   }, [user]);
 
   useEffect(() => {
-    if (!userEmail) return;
+    if (userEmail) {
+      dispatch(fetchUserData(userEmail));
+    }
+  }, [userEmail, dispatch]);
 
-    axios.get(`/api/get-user?email=${userEmail}`).then((res) => {
-      setIsPremium(res.data.result.isMember);
-    });
-  }, [userEmail]);
+  useEffect(() => {
+    if (data?.result?.isMember !== undefined) {
+      setIsPremium(data.result.isMember);
+    }
+  }, [data]);
 
   const menuList = [
     {
@@ -88,13 +96,14 @@ const SideBar = () => {
         )}
 
         <div className="mt-5">
-          {menuList.map((menu, index) => {
+          {menuList?.map((menu, index) => {
             return (
               <div
                 key={index}
                 className={`flex gap-5 items-center p-3 hover:bg-slate-200 rounded-lg cursor-pointer mt-3 ${
                   pathname === menu.path && "bg-slate-200"
-                }`}>
+                }`}
+                onClick={() => router.push(menu.path)}>
                 <menu.icon />
                 <h2>{menu.name}</h2>
               </div>

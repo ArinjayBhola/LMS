@@ -4,6 +4,7 @@ import axios from "axios";
 import Script from "next/script";
 import React from "react";
 import PriceCard from "./PriceCard";
+import { useSelector } from "react-redux";
 
 declare global {
   interface Window {
@@ -42,7 +43,17 @@ interface RazorpayOptions {
   };
 }
 
+interface ReduxStore {
+  user: {
+    user: {
+      id: string;
+    };
+  };
+}
+
 const PaymentForm = () => {
+  const userId = useSelector((store: ReduxStore) => store?.user?.user?.id);
+
   const Amount = 100;
 
   const handlePayment = async () => {
@@ -80,7 +91,7 @@ const PaymentForm = () => {
             razorpaySignature: response.razorpay_signature,
           };
 
-          const result = await axios.post("/api/payment-webhook", payload);
+          const result = await axios.post("/api/payment-webhook", { payload, userId });
           if (result.data.isOk) alert("payment succeed");
           else {
             alert(result.data.message);

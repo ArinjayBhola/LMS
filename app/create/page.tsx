@@ -10,6 +10,9 @@ import { v4 as uuidv4 } from "uuid";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/appStore";
+import { fetchCourse } from "@/redux/slice/getCourseList";
 
 interface FormData {
   studyType: string;
@@ -23,6 +26,7 @@ const Create = () => {
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleUserInput = (fieldName: keyof FormData, fieldValue: string) => {
     setFormData((prev) => ({
@@ -45,6 +49,7 @@ const Create = () => {
       setTimeout(() => {
         router.push("/dashboard");
         setLoading(false);
+        dispatch(fetchCourse(user?.primaryEmailAddress?.emailAddress));
         toast("Your course content is generating, click on refresh button");
       }, 17000);
     } catch (error) {

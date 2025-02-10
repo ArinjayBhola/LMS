@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     .where(eq(STUDY_MATERIAL_TABLE.createdBy, createdBy))
     .orderBy(desc(STUDY_MATERIAL_TABLE.id));
 
-  return NextResponse.json({ result: result });
+  return NextResponse.json(result);
 }
 
 export async function GET(req: NextRequest) {

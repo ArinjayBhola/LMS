@@ -35,3 +35,13 @@ export const STUDY_TYPE_CONTENT_TABLE = pgTable("studytTypeContent", {
   status: varchar().default("Generating"),
   finished: boolean().default(false),
 });
+
+export const SUBSCRIPTIONS_TABLE = pgTable("subscriptions", {
+  id: serial().primaryKey(),
+  userId: integer()
+    .notNull()
+    .references(() => USER_TABLE.id),
+  razorpayPaymentId: varchar().notNull(),
+  startDate: timestamp().defaultNow().notNull(),
+  endDate: timestamp().notNull(),
+});

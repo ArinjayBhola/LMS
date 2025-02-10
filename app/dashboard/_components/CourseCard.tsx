@@ -5,6 +5,9 @@ import Link from "next/link";
 import { Loader, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { fetchCourse } from "@/redux/slice/getCourseList";
+import { AppDispatch } from "@/redux/appStore";
 
 interface Course {
   title: string;
@@ -17,9 +20,10 @@ interface Course {
   createdAt: string;
 }
 
-const CourseCard = ({ course, getCourseList }: { course: Course; getCourseList: () => void }) => {
+const CourseCard = ({ course, createdBy }: { course: Course; createdBy: string | undefined }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch: AppDispatch = useDispatch();
 
   const date = (date: string) => {
     const dateString = new Date(date).toDateString().split(" ").slice(1).join(" ");
@@ -32,8 +36,8 @@ const CourseCard = ({ course, getCourseList }: { course: Course; getCourseList: 
       const result = await axios.delete(`/api/delete-course?id=${id}`);
       if (result.data === "success") {
         toast("Course deleted successfully");
-        getCourseList();
       }
+      dispatch(fetchCourse(createdBy));
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong");
