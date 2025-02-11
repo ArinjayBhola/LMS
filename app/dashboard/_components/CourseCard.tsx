@@ -8,6 +8,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { fetchCourse } from "@/redux/slice/getCourseList";
 import { AppDispatch } from "@/redux/appStore";
+import { setCourseId } from "@/redux/slice/courseSlice";
 
 interface Course {
   title: string;
@@ -63,7 +64,7 @@ const CourseCard = ({ course, createdBy }: { course: Course; createdBy: string |
 
       <div className="mt-3 flex justify-end">
         <Link href={`/course/${course.courseId}`}>
-          <Button>View</Button>
+          <Button onClick={() => dispatch(setCourseId(course.courseId))}>View</Button>
         </Link>
       </div>
       <div
