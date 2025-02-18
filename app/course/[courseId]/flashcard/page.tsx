@@ -15,6 +15,9 @@ import {
 import { Button } from "@/components/ui/button";
 import StepProgress from "../_components/StepProgress";
 import { Loader2 } from "lucide-react";
+import { fetchCourseContent } from "@/redux/slice/courseContentSlice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/appStore";
 
 const Flashcard = () => {
   const { courseId } = useParams();
@@ -24,6 +27,7 @@ const Flashcard = () => {
   const [stepCount, setStepCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     if (!api) return;
@@ -55,6 +59,9 @@ const Flashcard = () => {
         courseId: courseId,
         studyType: "Flashcard",
       });
+      if (courseId) {
+        dispatch(fetchCourseContent(courseId as string));
+      }
       router.push(`/course/${courseId}`);
     } catch (error) {
       console.error(error);

@@ -1,4 +1,6 @@
 import { Button } from "@/components/ui/button";
+import { AppDispatch } from "@/redux/appStore";
+import { fetchCourseContent } from "@/redux/slice/courseContentSlice";
 import { setCourse } from "@/redux/slice/courseSlice";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
@@ -43,7 +45,7 @@ const MaterialCardItem = ({
   course: Course;
 }) => {
   const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [isContentReady, setIsContentReady] = useState<boolean>(studyTypeContent?.[item.type] != null);
 
   const generateContent = async () => {
@@ -67,6 +69,7 @@ const MaterialCardItem = ({
     }
 
     await new Promise((resolve) => setTimeout(resolve, 7000));
+    dispatch(fetchCourseContent(course?.courseId));
 
     setIsContentReady(true);
     setLoading(false);

@@ -29,7 +29,7 @@ const courseContentSlice = createSlice({
     });
     builder.addCase(fetchCourseContent.fulfilled, (state, action) => {
       state.isLoading = false;
-      state.data[action.meta.arg] = action.payload; // Store data per courseId
+      state.data[action.meta.arg] = action.payload;
     });
     builder.addCase(fetchCourseContent.rejected, (state, action) => {
       console.log("Error", action.payload);
