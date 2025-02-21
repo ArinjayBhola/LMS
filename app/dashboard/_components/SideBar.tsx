@@ -12,16 +12,10 @@ import { useUser } from "@clerk/nextjs";
 import { fetchUserData } from "@/redux/slice/userSlice";
 import { AppDispatch, RootState } from "@/redux/appStore";
 
-interface ReduxStore {
-  course: {
-    course: number;
-  };
-}
-
 const SideBar = () => {
   const [isPremium, setIsPremium] = useState(false);
   const pathname = usePathname();
-  const totalCourse = useSelector((app: ReduxStore) => app.course.course);
+  const totalCourse = useSelector((store: RootState) => store.courseData.data.length);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const { user } = useUser();
   const dispatch = useDispatch<AppDispatch>();

@@ -1,10 +1,10 @@
 import React from "react";
-import PaymentForm from "../_components/PaymentForm";
+import PremiumContent from "../_components/PremiumContent";
 
 const page = () => {
   return (
     <div>
-      <PaymentForm />
+      <PremiumContent/>
     </div>
   );
 };

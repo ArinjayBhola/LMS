@@ -5,17 +5,19 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const { topic, courseId, courseType, createdBy, difficultyLevel, studyType } = body;
 
-  inngest.send({
-    name: "course.generate",
-    data: {
-      studyType: studyType,
-      courseId: courseId,
-      topic: topic,
-      courseType: courseType,
-      createdBy: createdBy,
-      difficultyLevel: difficultyLevel,
-    },
-  });
+  setTimeout(() => {
+    inngest.send({
+      name: "course.generate",
+      data: {
+        topic,
+        courseId,
+        courseType,
+        createdBy,
+        difficultyLevel,
+        studyType,
+      },
+    });
+  }, 1000);
 
-  return NextResponse.json({ result: "success" });
+  return NextResponse.json({ result: "processing" });
 }

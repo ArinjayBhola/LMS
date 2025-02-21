@@ -86,30 +86,15 @@ export const generateCourseOutline = inngest.createFunction(
   async ({ event, step }) => {
     const { topic, courseId, courseType, createdBy, difficultyLevel, studyType } = event.data;
 
-    const aiResult = await step.run("Generate Course using AI", async () => {
+    await step.run("Generate and Save Course", async () => {
       const promt = `Generate a study material for ${topic} for ${courseType} and level of difficulty will be ${difficultyLevel} with summary of course, List of chapter along with summary and emoji icon for each chapter, topic list in each chapter, all result in JSON format`;
-      const result = await courseOutlineModel.sendMessage(promt);
-      const aiResponse = JSON.parse(result.response.text());
-      return aiResponse;
-    });
+      const aiPromise = courseOutlineModel.sendMessage(promt).then((res) => JSON.parse(res.response.text()));
+      const aiResult = await aiPromise;
 
-    await step.run("Save result to DB", async () => {
-      try {
-        await db
-          .insert(STUDY_MATERIAL_TABLE)
-          .values({
-            courseLayout: aiResult,
-            title: topic,
-            courseId,
-            courseType: studyType,
-            createdBy,
-            difficultyLevel,
-          })
-          .returning();
-      } catch (error) {
-        console.error("DB Error:", error);
-        throw error;
-      }
+      return db
+        .insert(STUDY_MATERIAL_TABLE)
+        .values({ courseLayout: aiResult, title: topic, courseId, courseType: studyType, createdBy, difficultyLevel })
+        .returning();
     });
   },
 );

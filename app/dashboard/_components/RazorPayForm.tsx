@@ -44,15 +44,17 @@ interface RazorpayOptions {
 }
 
 interface ReduxStore {
-  user: {
-    user: {
-      id: string;
+  userData: {
+    data: {
+      result: {
+        id: string;
+      };
     };
   };
 }
 
-const PaymentForm = () => {
-  const userId = useSelector((store: ReduxStore) => store?.user?.user?.id);
+const RazorPayForm = () => {
+  const userId = useSelector((store: ReduxStore) => store?.userData?.data?.result?.id);
 
   const Amount = 100;
 
@@ -121,4 +123,4 @@ const PaymentForm = () => {
   );
 };
 
-export default PaymentForm;
+export default RazorPayForm;
