@@ -2,9 +2,10 @@
 
 import axios from "axios";
 import Script from "next/script";
-import React from "react";
+import React, { useState } from "react";
 import PriceCard from "./PriceCard";
 import { useSelector } from "react-redux";
+import { toast } from "sonner";
 
 declare global {
   interface Window {
@@ -54,6 +55,7 @@ interface ReduxStore {
 }
 
 const RazorPayForm = () => {
+  const [loading, setLoading] = useState(false);
   const userId = useSelector((store: ReduxStore) => store?.userData?.data?.result?.id);
 
   const Amount = 100;
@@ -72,6 +74,7 @@ const RazorPayForm = () => {
 
   const processPayment = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const orderId = await handlePayment();
       const options = {
@@ -94,9 +97,9 @@ const RazorPayForm = () => {
           };
 
           const result = await axios.post("/api/payment-webhook", { payload, userId });
-          if (result.data.isOk) alert("payment succeed");
+          if (result.data.isOk) toast.success("Payment Successful. Reload page to see changes");
           else {
-            alert(result.data.message);
+            toast.error("Some error occured");
           }
         },
         prefill: {
@@ -112,13 +115,18 @@ const RazorPayForm = () => {
       paymentObject.open();
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center">
       <Script src="https://checkout.razorpay.com/v1/checkout.js" />
-      <PriceCard processPayment={processPayment} />
+      <PriceCard
+        processPayment={processPayment}
+        loading={loading}
+      />
     </div>
   );
 };

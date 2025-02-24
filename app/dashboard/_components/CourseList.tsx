@@ -30,9 +30,12 @@ const CourseList = () => {
     }
   };
 
+  // Modify useEffect for better control
   useEffect(() => {
-    getCourseData();
-  }, [dispatch, userEmail, data]);
+    if (userEmail && (!data || data.length === 0)) {
+      getCourseData();
+    }
+  }, [dispatch, userEmail, data]); // This will only trigger if 'userEmail' or 'data' changes
 
   return (
     <div className="mt-10">
@@ -47,19 +50,20 @@ const CourseList = () => {
       </h2>
 
       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 mt-2 gap-5">
-        {isLoading
-          ? [1, 2, 3].map((_, index) => (
-              <div
-                className="h-56 w-full bg-slate-200 rounded-lg animate-pulse"
-                key={index}></div>
-            ))
-          : courseList?.map((course, index) => (
-              <CourseCard
-                course={course}
-                key={index}
-                createdBy={userEmail}
-              />
-            ))}
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center space-y-4 mt-8">
+            <p className="text-xl font-semibold text-gray-700">No Courses Found</p>
+            <p className="text-base text-gray-500">Create a new course to get started.</p>
+          </div>
+        ) : (
+          courseList?.map((course, index) => (
+            <CourseCard
+              course={course}
+              key={index}
+              createdBy={userEmail}
+            />
+          ))
+        )}
       </div>
     </div>
   );

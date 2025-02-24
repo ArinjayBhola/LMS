@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import { Check, Loader } from "lucide-react";
 
 interface PriceCardProps {
   processPayment: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  loading: boolean;
 }
 
 const monthlyPlan = [
@@ -10,7 +11,7 @@ const monthlyPlan = [
   { id: 2, content: "Create Unlimited Courses" },
 ];
 
-const PriceCard = ({ processPayment }: PriceCardProps) => {
+const PriceCard = ({ processPayment, loading }: PriceCardProps) => {
   return (
     <div className="flex flex-col items-center bg-gradient-to-t from-gray-100 via-gray-50 to-white hover:shadow-xl border border-gray-300 rounded-3xl p-8 w-96 text-center transition-all duration-300">
       <h3 className="text-2xl font-semibold text-gray-800 mb-3">Monthly Plan</h3>
@@ -31,7 +32,7 @@ const PriceCard = ({ processPayment }: PriceCardProps) => {
         variant="destructive"
         className="mt-6 w-full py-3 text-xl font-medium rounded-xl"
         onClick={processPayment}>
-        Buy Plan
+        {loading ? <Loader className="animate-spin" /> : "Buy Plan"}
       </Button>
     </div>
   );
