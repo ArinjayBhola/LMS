@@ -69,6 +69,10 @@ const MaterialCardItem = ({
     }
 
     await new Promise((resolve) => setTimeout(resolve, 7000));
+    if (item.name === "Notes/ Chapters") {
+      window.location.reload();
+      dispatch(fetchCourseContent(course?.courseId));
+    }
     dispatch(fetchCourseContent(course?.courseId));
 
     setIsContentReady(true);
