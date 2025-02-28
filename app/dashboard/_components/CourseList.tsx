@@ -30,12 +30,11 @@ const CourseList = () => {
     }
   };
 
-  // Modify useEffect for better control
   useEffect(() => {
     if (userEmail && (!data || data.length === 0)) {
       getCourseData();
     }
-  }, [dispatch, userEmail, data]); // This will only trigger if 'userEmail' or 'data' changes
+  }, [dispatch, userEmail, data]);
 
   return (
     <div className="mt-10">

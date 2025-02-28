@@ -4,6 +4,9 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Note } from "../notes/page";
+import { useDispatch } from "react-redux";
+import { fetchCourseContent } from "@/redux/slice/courseContentSlice";
+import { AppDispatch } from "@/redux/appStore";
 
 const StepProgress = ({
   stepCount,
@@ -21,6 +24,7 @@ const StepProgress = ({
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [flashcardData, setFlashcardData] = useState<Note[] | string[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
 
   const updateFinishStatus = async () => {
     setLoading(true);
@@ -29,6 +33,7 @@ const StepProgress = ({
         courseId: courseId,
         studyType: studyType,
       });
+      dispatch(fetchCourseContent(courseId as string));
       router.push(`/course/${courseId}`);
     } catch (error) {
       console.error(error);
