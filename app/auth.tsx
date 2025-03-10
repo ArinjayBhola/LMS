@@ -6,9 +6,10 @@ import axios from "axios";
 
 function Auth({ children }: { children: React.ReactNode }) {
   const { user } = useUser();
+  const emailAddress = user?.primaryEmailAddress?.emailAddress;
 
   useEffect(() => {
-    if (user) {
+    if (emailAddress) {
       checkIsNewUser();
     }
   }, [user]);

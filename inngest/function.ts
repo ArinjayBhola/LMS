@@ -26,7 +26,7 @@ export const createNewUser = inngest.createFunction(
         .from(USER_TABLE)
         .where(eq(USER_TABLE.email, user?.primaryEmailAddress?.emailAddress));
 
-      const fullName = user?.fullName?.trim();
+      const fullName = user?.fullName?.trim() || user.username?.trim();
 
       if (data.length == 0) {
         const newUser = await db

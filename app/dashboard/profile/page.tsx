@@ -3,8 +3,6 @@
 import { useSelector } from "react-redux";
 import Link from "next/link";
 import { RootState } from "@/redux/appStore";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 const ProfilePage = () => {
   const { email, name, isMember } = useSelector((state: RootState) => {
@@ -12,14 +10,6 @@ const ProfilePage = () => {
     return result ? result : { email: "", name: "", isMember: false };
   });
   const totalCourses = useSelector((state: RootState) => state?.courseData?.data);
-
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!email || !name || !isMember) {
-      router.push("/dashboard");
-    }
-  }, [router, email, name, isMember]);
 
   return (
     <div className="flex flex-col items-center p-6">
