@@ -58,7 +58,7 @@ const SideBar = () => {
     },
   ];
   return (
-    <div className="h-screen shadow-md p-5">
+    <div className="h-full shadow-md p-5 bg-card border-r flex flex-col">
       <div className="flex gap-2 items-center">
         <Image
           src={"/logo.svg"}
@@ -66,10 +66,10 @@ const SideBar = () => {
           width={40}
           height={40}
         />
-        <h2 className="font-bold text-2xl">Easy Study</h2>
+        <h2 className="font-bold text-2xl text-foreground">Easy Study</h2>
       </div>
 
-      <div className="mt-10">
+      <div className="mt-10 flex-1">
         {isPremium ? (
           <Link
             href={"/create"}
@@ -77,9 +77,9 @@ const SideBar = () => {
             <Button className="w-full">+ Create New</Button>
           </Link>
         ) : totalCourse >= 5 ? (
-          <div>
-            <h2 className="font-semibold text-xl">You have reached your limit</h2>
-            <p className="text-sm text-gray-500">Upgrade to create more course or delete course</p>
+          <div className="p-3 bg-muted/50 rounded-lg">
+            <h2 className="font-semibold text-xl text-foreground">Limit Reached</h2>
+            <p className="text-sm text-muted-foreground">Upgrade to create more courses</p>
           </div>
         ) : (
           <Link
@@ -89,16 +89,18 @@ const SideBar = () => {
           </Link>
         )}
 
-        <div className="mt-5">
+        <div className="mt-5 space-y-2">
           {menuList?.map((menu, index) => {
             return (
               <div
                 key={index}
-                className={`flex gap-5 items-center p-3 hover:bg-slate-200 rounded-lg cursor-pointer mt-3 ${
-                  pathname === menu.path && "bg-slate-200"
+                className={`flex gap-5 items-center p-3 rounded-lg cursor-pointer transition-colors ${
+                  pathname === menu.path 
+                    ? "bg-primary text-primary-foreground" 
+                    : "hover:bg-accent hover:text-accent-foreground text-foreground"
                 }`}
                 onClick={() => router.push(menu.path)}>
-                <menu.icon />
+                <menu.icon className={pathname === menu.path ? "text-primary-foreground" : ""} />
                 <h2>{menu.name}</h2>
               </div>
             );
@@ -106,13 +108,13 @@ const SideBar = () => {
         </div>
       </div>
       {isPremium === false && (
-        <div className="border p-3 bg-slate-100 rounded-lg absolute bottom-10 w-[85%]">
-          <h2 className="text-lg mb-2">Available Credits: {5 - totalCourse}</h2>
-          <Progress value={(totalCourse / 5) * 100} />
-          <h2 className="text-sm">{Number(totalCourse)} out of 5 credits used</h2>
+        <div className="border p-3 bg-muted rounded-lg w-full mt-auto">
+          <h2 className="text-lg mb-2 text-foreground">Available Credits: {5 - totalCourse}</h2>
+          <Progress value={(totalCourse / 5) * 100} className="h-2" />
+          <h2 className="text-sm text-muted-foreground mt-2">{Number(totalCourse)} out of 5 credits used</h2>
           <Link
             href={"/dashboard/upgrade"}
-            className="text-primary text-xs mt-3">
+            className="text-primary text-xs mt-3 block hover:underline">
             Upgrade to create more
           </Link>
         </div>

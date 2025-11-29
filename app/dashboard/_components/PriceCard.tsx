@@ -13,10 +13,10 @@ const monthlyPlan = [
 
 const PriceCard = ({ processPayment, loading }: PriceCardProps) => {
   return (
-    <div className="flex flex-col items-center bg-gradient-to-t from-gray-100 via-gray-50 to-white hover:shadow-xl border border-gray-300 rounded-3xl p-8 w-96 text-center transition-all duration-300">
-      <h3 className="text-2xl font-semibold text-gray-800 mb-3">Monthly Plan</h3>
-      <p className="text-3xl font-bold text-gray-900 mt-2">₹1999</p>
-      <p className="text-base text-red-600 line-through">50% off</p>
+    <div className="flex flex-col items-center bg-card hover:shadow-xl border rounded-3xl p-8 w-full max-w-sm text-center transition-all duration-300">
+      <h3 className="text-2xl font-semibold text-card-foreground mb-3">Monthly Plan</h3>
+      <p className="text-3xl font-bold text-muted-foreground mt-2">₹1999</p>
+      <p className="text-base text-destructive line-through">50% off</p>
       <p className="text-4xl font-extrabold text-primary my-3">₹999</p>
       <div className="w-full mt-5 space-y-4">
         {monthlyPlan.map((item) => (
@@ -24,7 +24,7 @@ const PriceCard = ({ processPayment, loading }: PriceCardProps) => {
             key={item.id}
             className="flex items-center gap-3 py-2 w-full justify-start">
             <Check className="text-green-500 w-5 h-5 shrink-0" />
-            <p className="text-lg text-gray-700 font-medium">{item.content}</p>
+            <p className="text-lg text-card-foreground font-medium">{item.content}</p>
           </div>
         ))}
       </div>

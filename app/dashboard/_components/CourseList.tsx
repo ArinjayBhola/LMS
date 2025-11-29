@@ -38,21 +38,25 @@ const CourseList = () => {
 
   return (
     <div className="mt-10">
-      <h2 className="font-bold text-2xl flex justify-between items-center">
+      <h2 className="font-bold text-2xl flex justify-between items-center text-foreground">
         Your Study Material
         <Button
           variant={"outline"}
-          className="border-primary text-primary"
+          className="border-primary text-primary hover:bg-primary/10"
           onClick={() => dispatch(fetchCourse(userEmail))}>
-          <RefreshCw /> Refresh
+          <RefreshCw className="mr-2 h-4 w-4" /> Refresh
         </Button>
       </h2>
 
-      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 mt-2 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-6 gap-5">
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center space-y-4 mt-8">
-            <p className="text-xl font-semibold text-gray-700">No Courses Found</p>
-            <p className="text-base text-gray-500">Create a new course to get started.</p>
+          <div className="col-span-full flex flex-col items-center justify-center space-y-4 mt-8">
+            <p className="text-xl font-semibold text-muted-foreground">Loading courses...</p>
+          </div>
+        ) : courseList?.length === 0 ? (
+           <div className="col-span-full flex flex-col items-center justify-center space-y-4 mt-8">
+            <p className="text-xl font-semibold text-foreground">No Courses Found</p>
+            <p className="text-base text-muted-foreground">Create a new course to get started.</p>
           </div>
         ) : (
           courseList?.map((course, index) => (

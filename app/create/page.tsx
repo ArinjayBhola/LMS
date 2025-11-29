@@ -58,10 +58,10 @@ const Create = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-5 md:px-24 lg:px-36 mt-20">
-      <h2 className="font-bold text-4xl text-primary">Start Building Your Personal Study Material</h2>
-      <p className="text-gray-500 text-lg">Fill all details in order to generate study material</p>
-      <div className="mt-10">
+    <div className="flex flex-col items-center p-5 md:px-24 lg:px-36 mt-10 md:mt-20 max-w-6xl mx-auto">
+      <h2 className="font-bold text-2xl md:text-4xl text-primary text-center">Start Building Your Personal Study Material</h2>
+      <p className="text-muted-foreground text-lg mt-2 text-center">Fill all details in order to generate study material</p>
+      <div className="mt-10 w-full">
         {step === 0 ? (
           <SelectOption selectedStudyType={(value) => handleUserInput("studyType", value)} />
         ) : (
@@ -71,7 +71,7 @@ const Create = () => {
           />
         )}
       </div>
-      <div className="flex justify-between w-full mt-32">
+      <div className="flex justify-between w-full mt-16 md:mt-32">
         <Button
           variant={"outline"}
           onClick={() => setStep(step - 1)}
