@@ -22,19 +22,21 @@ const ChaptersList = ({ course }: { course: Course }) => {
   };
   const chapters = course.courseLayout.chapters;
   return (
-    <div className="mt-5">
-      <h2 className="font-medium text-xl">Chapters</h2>
-      <div className="mt-3">
+    <div className="mt-8">
+      <h2 className="font-bold text-2xl text-foreground mb-5">Course Chapters</h2>
+      <div className="space-y-4">
         {chapters.map((chapter, index) => (
           <div
             key={index}
-            className="flex items-center gap-5 p-4 border shadow-md mb-2 rounded-lg cursor-pointer">
-            <h2 className="text-2xl">{chapter?.emojiIcon || chapter?.emoji || getEmoji(chapter?.chapterTitle)}</h2>
-            <div className="">
-              <h2 className="font-medium text-lg">
+            className="flex items-start gap-5 p-5 border border-border/50 shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300 rounded-xl bg-card cursor-pointer group">
+            <div className="text-3xl p-3 bg-primary/5 rounded-xl group-hover:bg-primary/10 transition-colors">
+              {chapter?.emojiIcon || chapter?.emoji || getEmoji(chapter?.chapterTitle)}
+            </div>
+            <div className="flex-1">
+              <h2 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">
                 {chapter?.emojiIcon || chapter?.emoji ? chapter?.chapterTitle : removeEmoji(chapter?.chapterTitle)}
               </h2>
-              <p className="text-gray-500 text-sm">{chapter?.chapterSummary}</p>
+              <p className="text-muted-foreground text-sm mt-2 leading-relaxed">{chapter?.chapterSummary}</p>
             </div>
           </div>
         ))}

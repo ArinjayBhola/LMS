@@ -44,17 +44,20 @@ const Quiz = () => {
   };
 
   return (
-    <div>
-      <h2 className="font-bold text-2xl text-center mb-4"></h2>
-      <StepProgress
-        data={quiz}
-        stepCount={stepCount}
-        setStepCount={(value: number) => setStepCount(value)}
-        courseId={courseId}
-        studyType="Quiz"
-      />
+    <div className="max-w-3xl mx-auto">
+      <h2 className="font-bold text-3xl text-center mb-8 text-foreground">Quiz Time</h2>
+      
+      <div className="mb-8">
+        <StepProgress
+          data={quiz}
+          stepCount={stepCount}
+          setStepCount={(value: number) => setStepCount(value)}
+          courseId={courseId}
+          studyType="Quiz"
+        />
+      </div>
 
-      <div>
+      <div className="min-h-[400px]">
         {quiz && (
           <QuizCardItem
             quiz={quiz[stepCount]}
@@ -63,19 +66,21 @@ const Quiz = () => {
         )}
       </div>
 
-      {isCorrectAnswer === true && (
-        <div className="border p-3 border-green-700 bg-green-200 rounded-lg">
-          <h2 className="font-bold text-lg text-green-600">Correct</h2>
-          <p className="text-green-600">Your answer is correct</p>
-        </div>
-      )}
+      <div className="mt-8 space-y-4">
+        {isCorrectAnswer === true && (
+          <div className="border border-green-500/20 bg-green-500/10 p-6 rounded-xl animate-in fade-in slide-in-from-bottom-4">
+            <h2 className="font-bold text-xl text-green-600 mb-1">🎉 Correct Answer!</h2>
+            <p className="text-green-700/80">Great job! Keep going.</p>
+          </div>
+        )}
 
-      {isCorrectAnswer === false && (
-        <div className="border p-3 border-red-700 bg-red-200 rounded-lg">
-          <h2 className="font-bold text-lg text-red-600">Incorrect</h2>
-          <p className="text-red-600">Correct anser is: {correctAns}</p>
-        </div>
-      )}
+        {isCorrectAnswer === false && (
+          <div className="border border-red-500/20 bg-red-500/10 p-6 rounded-xl animate-in fade-in slide-in-from-bottom-4">
+            <h2 className="font-bold text-xl text-red-600 mb-1">❌ Incorrect</h2>
+            <p className="text-red-700/80">The correct answer is: <span className="font-bold">{correctAns}</span></p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

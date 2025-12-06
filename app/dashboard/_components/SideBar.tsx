@@ -58,64 +58,70 @@ const SideBar = () => {
     },
   ];
   return (
-    <div className="h-full shadow-md p-5 bg-card border-r flex flex-col">
-      <div className="flex gap-2 items-center">
+    <div className="h-full shadow-lg p-6 bg-card border-r flex flex-col transition-all duration-300">
+      <div className="flex gap-3 items-center px-2">
         <Image
           src={"/logo.svg"}
           alt="logo"
-          width={40}
-          height={40}
+          width={44}
+          height={44}
+          className="transition-transform hover:scale-110 duration-300"
         />
-        <h2 className="font-bold text-2xl text-foreground">Easy Study</h2>
+        <h2 className="font-bold text-2xl text-foreground tracking-tight">Easy Study</h2>
       </div>
 
-      <div className="mt-10 flex-1">
-        {isPremium ? (
-          <Link
-            href={"/create"}
-            className="w-full">
-            <Button className="w-full">+ Create New</Button>
-          </Link>
-        ) : totalCourse >= 5 ? (
-          <div className="p-3 bg-muted/50 rounded-lg">
-            <h2 className="font-semibold text-xl text-foreground">Limit Reached</h2>
-            <p className="text-sm text-muted-foreground">Upgrade to create more courses</p>
-          </div>
-        ) : (
-          <Link
-            href={"/create"}
-            className="w-full">
-            <Button className="w-full">+ Create New</Button>
-          </Link>
-        )}
+      <div className="mt-10 flex-1 flex flex-col gap-6">
+        <div className="px-2">
+          {isPremium ? (
+            <Link href={"/create"} className="w-full block">
+              <Button className="w-full font-semibold shadow-md hover:shadow-lg transition-all" size="lg">+ Create New</Button>
+            </Link>
+          ) : totalCourse >= 5 ? (
+            <div className="p-4 bg-muted/50 rounded-xl border border-muted">
+              <h2 className="font-semibold text-lg text-foreground">Limit Reached</h2>
+              <p className="text-sm text-muted-foreground mt-1">Upgrade to create more courses</p>
+            </div>
+          ) : (
+            <Link href={"/create"} className="w-full block">
+              <Button className="w-full font-semibold shadow-md hover:shadow-lg transition-all" size="lg">+ Create New</Button>
+            </Link>
+          )}
+        </div>
 
-        <div className="mt-5 space-y-2">
+        <div className="space-y-1">
           {menuList?.map((menu, index) => {
+            const isActive = pathname === menu.path;
             return (
               <div
                 key={index}
-                className={`flex gap-5 items-center p-3 rounded-lg cursor-pointer transition-colors ${
-                  pathname === menu.path 
-                    ? "bg-primary text-primary-foreground" 
-                    : "hover:bg-accent hover:text-accent-foreground text-foreground"
+                className={`flex gap-4 items-center p-4 rounded-xl cursor-pointer transition-all duration-200 group ${
+                  isActive
+                    ? "bg-primary text-primary-foreground shadow-md translate-x-1"
+                    : "hover:bg-accent hover:text-accent-foreground text-muted-foreground hover:translate-x-1"
                 }`}
                 onClick={() => router.push(menu.path)}>
-                <menu.icon className={pathname === menu.path ? "text-primary-foreground" : ""} />
-                <h2>{menu.name}</h2>
+                <menu.icon className={`w-5 h-5 transition-transform group-hover:scale-110 ${isActive ? "text-primary-foreground" : ""}`} />
+                <h2 className="font-medium text-base">{menu.name}</h2>
               </div>
             );
           })}
         </div>
       </div>
+      
       {isPremium === false && (
-        <div className="border p-3 bg-muted rounded-lg w-full mt-auto">
-          <h2 className="text-lg mb-2 text-foreground">Available Credits: {5 - totalCourse}</h2>
-          <Progress value={(totalCourse / 5) * 100} className="h-2" />
-          <h2 className="text-sm text-muted-foreground mt-2">{Number(totalCourse)} out of 5 credits used</h2>
+        <div className="border border-border/50 p-5 bg-muted/30 rounded-xl w-full mt-auto backdrop-blur-sm">
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-sm font-medium text-foreground">Credits Used</h2>
+            <span className="text-xs font-bold text-primary">{totalCourse} / 5</span>
+          </div>
+          <Progress value={(totalCourse / 5) * 100} className="h-2.5 rounded-full" />
+          <p className="text-xs text-muted-foreground mt-3">
+            Upgrade your plan for unlimited course creation.
+          </p>
           <Link
             href={"/dashboard/upgrade"}
-            className="text-primary text-xs mt-3 block hover:underline">
-            Upgrade to create more
+            className="text-primary text-sm font-semibold mt-3 block hover:underline">
+            Upgrade Now →
           </Link>
         </div>
       )}

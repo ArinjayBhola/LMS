@@ -95,40 +95,55 @@ const MaterialCardItem = ({
   const check = questionAnswerButton === "Question/Answer";
 
   return (
-    <div className={`border shadow-md rounded-lg p-5 flex flex-col items-center ${!isContentReady && "grayscale"}`}>
-      <h2
-        className={`p-1 px-2 text-white rounded-full text-[15px] mb-3 ${
-          isContentReady ? "bg-green-500" : "bg-gray-300 text-black"
-        }`}>
-        {isContentReady ? "Ready" : "Not Ready"}
-      </h2>
+    <div className={`group border border-border/50 shadow-sm hover:shadow-xl rounded-2xl p-6 flex flex-col items-center bg-card transition-all duration-300 hover:-translate-y-1 relative overflow-hidden ${!isContentReady && "grayscale opacity-80"}`}>
+      {/* Status Badge */}
+      <div className="absolute top-3 right-3">
+        {isContentReady ? (
+          <span className="flex h-3 w-3 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]"></span>
+        ) : (
+          <span className="flex h-3 w-3 rounded-full bg-gray-300"></span>
+        )}
+      </div>
 
-      <Image
-        src={item.icon}
-        alt={item.name}
-        width={50}
-        height={50}
-      />
-      <h2 className="font-medium mt-3">{item.name}</h2>
-      <p className="text-gray-500 text-sm text-center">{item.description}</p>
-      {!isContentReady ? (
-        <Button
-          className="mt-3 w-full"
-          variant={"outline"}
-          onClick={generateContent}
-          disabled={check}>
-          {loading ? <Loader2 className="animate-spin" /> : "Generate"}
-        </Button>
-      ) : (
-        <Link href={`/course/${course?.courseId}/${item.path}`}>
+      <div className="p-4 bg-primary/5 rounded-full mb-4 group-hover:bg-primary/10 transition-colors">
+        <Image
+          src={item.icon}
+          alt={item.name}
+          width={48}
+          height={48}
+          className="object-contain"
+        />
+      </div>
+      
+      <h2 className="font-bold text-lg text-foreground mt-2">{item.name}</h2>
+      <p className="text-muted-foreground text-sm text-center mt-2 line-clamp-2 leading-relaxed">{item.description}</p>
+      
+      <div className="mt-auto w-full pt-4">
+        {!isContentReady ? (
           <Button
-            className="mt-3 w-full"
+            className="w-full font-semibold shadow-sm"
             variant={"outline"}
-            onClick={() => {}}>
-            View
+            onClick={generateContent}
+            disabled={check || loading}>
+            {loading ? (
+              <>
+                <Loader2 className="animate-spin mr-2 h-4 w-4" /> Generating...
+              </>
+            ) : (
+              "Generate Content"
+            )}
           </Button>
-        </Link>
-      )}
+        ) : (
+          <Link href={`/course/${course?.courseId}/${item.path}`} className="w-full block">
+            <Button
+              className="w-full font-semibold shadow-sm group-hover:shadow-md transition-all"
+              variant={"default"}
+              onClick={() => {}}>
+              View Content
+            </Button>
+          </Link>
+        )}
+      </div>
     </div>
   );
 };

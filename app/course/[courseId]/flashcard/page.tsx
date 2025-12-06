@@ -71,9 +71,11 @@ const Flashcard = () => {
   };
 
   return (
-    <div>
-      <h2 className="font-bold text-2xl">Flashcard</h2>
-      <p>Flashcard: The ultimate learning tool</p>
+    <div className="max-w-4xl mx-auto">
+      <div className="mb-8 text-center">
+        <h2 className="font-bold text-3xl text-foreground tracking-tight">Flashcards</h2>
+        <p className="text-muted-foreground mt-2 text-lg">Master concepts with interactive flashcards</p>
+      </div>
 
       <StepProgress
         courseId={courseId}
@@ -83,11 +85,11 @@ const Flashcard = () => {
         studyType="Flashcard"
       />
 
-      <div className="mt-10">
-        <Carousel setApi={setApi}>
+      <div className="mt-12 flex justify-center perspective-1000">
+        <Carousel setApi={setApi} className="w-full max-w-xl">
           <CarouselContent>
             {flashcard.map((flashcard, index) => (
-              <CarouselItem key={index}>
+              <CarouselItem key={index} className="pl-4">
                 <FlashCardItem
                   isFlipped={isFlipped}
                   handleClick={() => setIsFlipped(!isFlipped)}
@@ -96,29 +98,21 @@ const Flashcard = () => {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious
-            onClick={() => {
-              setStepCount((prev) => Math.max(prev - 1, 0));
-              api?.scrollPrev();
-            }}
-          />
-          <CarouselNext
-            onClick={() => {
-              setStepCount((prev) => Math.min(prev + 1, flashcard.length - 1));
-              api?.scrollNext();
-            }}
-          />
+          <CarouselPrevious className="hidden md:flex -left-12 h-12 w-12 border-2 border-primary/20 hover:bg-primary/10 hover:border-primary text-primary" />
+          <CarouselNext className="hidden md:flex -right-12 h-12 w-12 border-2 border-primary/20 hover:bg-primary/10 hover:border-primary text-primary" />
         </Carousel>
       </div>
 
       {stepCount === flashcard.length - 1 && (
-        <Button
-          variant={"default"}
-          className="absolute right-10 bottom-10 rounded-full px-4 p-5 shadow-2xl"
-          size={"default"}
-          onClick={updateFinishStatus}>
-          {loading ? <Loader2 className="animate-spin" /> : "Finish"}
-        </Button>
+        <div className="flex justify-center mt-12">
+          <Button
+            variant={"default"}
+            className="rounded-full px-8 py-6 shadow-lg hover:shadow-xl hover:scale-105 transition-all text-lg font-semibold"
+            size={"lg"}
+            onClick={updateFinishStatus}>
+            {loading ? <Loader2 className="animate-spin mr-2" /> : "Complete Flashcards"}
+          </Button>
+        </div>
       )}
     </div>
   );
