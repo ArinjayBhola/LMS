@@ -65,7 +65,7 @@ const CourseList = () => {
             <div className="text-center space-y-2">
               <p className="text-2xl font-bold text-foreground">No Courses Found</p>
               <p className="text-muted-foreground max-w-md mx-auto">
-                You haven't created any courses yet. Start by creating a new course to generate study materials.
+                You haven&apos;t created any courses yet. Start by creating a new course to generate study materials.
               </p>
             </div>
           </div>

@@ -24,7 +24,7 @@ const WelcomeBanner = () => {
       <div className="relative z-10 space-y-2">
         <h2 className="font-bold text-3xl md:text-4xl tracking-tight">Hello, {user?.fullName} 👋</h2>
         <p className="text-primary-foreground/90 text-lg max-w-xl">
-          Welcome back! It's time to continue your learning journey. Create a new course or review your existing materials.
+          Welcome back! It&apos;s time to continue your learning journey. Create a new course or review your existing materials.
         </p>
       </div>
     </div>

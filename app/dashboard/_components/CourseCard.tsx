@@ -111,8 +111,8 @@ const CourseCard = ({ course, createdBy }: { course: Course; createdBy: string |
                 <Trash2 className="h-6 w-6" />
               </div>
               <h3 className="text-xl font-bold text-card-foreground">Delete Course?</h3>
-              <p className="text-muted-foreground mt-2">
-                Are you sure you want to delete <span className="font-semibold text-foreground">"{course?.courseLayout?.courseTitle}"</span>? This action cannot be undone.
+               <p className="text-muted-foreground mt-2">
+                Are you sure you want to delete <span className="font-semibold text-foreground">&quot;{course?.courseLayout?.courseTitle}&quot;</span>? This action cannot be undone.
               </p>
             </div>
             
