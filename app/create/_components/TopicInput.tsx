@@ -11,17 +11,17 @@ const TopicInput = ({
   setDifficultyLevel: (value: string) => void;
 }) => {
   return (
-    <div className="mt-10 flex flex-col items-center w-full">
-      <h2 className="text-foreground mb-2">Enter topic or paste the content</h2>
+    <div className="mt-6 flex flex-col items-center w-full animate-in slide-in-from-right duration-300">
+      <h2 className="text-foreground text-xl font-medium mb-4">Enter topic or paste the content</h2>
       <Textarea
-        placeholder="Start writing here"
-        className="mt-2 w-full md:w-1/2 max-w-xl"
+        placeholder="Start writing here..."
+        className="w-full md:w-3/4 max-w-2xl min-h-[150px] text-lg bg-background/50"
         onChange={(e) => setTopic(e.target.value)}
       />
-      <h2 className="mt-7 mb-3 text-foreground">Select the difficulty level</h2>
+      <h2 className="mt-10 mb-4 text-foreground text-xl font-medium">Select difficulty level</h2>
       <Select onValueChange={(value) => setDifficultyLevel(value)}>
-        <SelectTrigger className="w-full md:w-1/2 max-w-xl">
-          <SelectValue placeholder="Difficulty level" />
+        <SelectTrigger className="w-full md:w-3/4 max-w-2xl">
+          <SelectValue placeholder="Select Difficulty" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="Easy">Easy</SelectItem>

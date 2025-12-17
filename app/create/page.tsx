@@ -58,10 +58,11 @@ const Create = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-5 md:px-24 lg:px-36 mt-10 md:mt-20 max-w-6xl mx-auto">
-      <h2 className="font-bold text-2xl md:text-4xl text-primary text-center">Start Building Your Personal Study Material</h2>
-      <p className="text-muted-foreground text-lg mt-2 text-center">Fill all details in order to generate study material</p>
-      <div className="mt-10 w-full">
+    <div className="flex flex-col items-center p-8 md:px-24 lg:px-36 mt-10 md:mt-20 max-w-5xl mx-auto glass rounded-3xl animate-in fade-in duration-500">
+      <h2 className="font-extrabold text-3xl md:text-5xl text-gradient text-center mb-4">Start Building Your Personal Study Material</h2>
+      <p className="text-muted-foreground text-xl text-center max-w-2xl">Fill all details in order to generate AI-powered study material tailored for you.</p>
+      
+      <div className="mt-12 w-full">
         {step === 0 ? (
           <SelectOption selectedStudyType={(value) => handleUserInput("studyType", value)} />
         ) : (
@@ -71,20 +72,27 @@ const Create = () => {
           />
         )}
       </div>
-      <div className="flex justify-between w-full mt-16 md:mt-32">
+
+      <div className="flex justify-between w-full mt-16 pb-4">
         <Button
-          variant={"outline"}
+          variant={"ghost"}
+          size="lg"
           onClick={() => setStep(step - 1)}
-          disabled={step === 0}>
+          disabled={step === 0}
+          className="text-muted-foreground hover:text-foreground">
           Previous
         </Button>
+        
         {step === 0 ? (
-          <Button onClick={() => setStep(step + 1)}>Next</Button>
+          <Button size="lg" onClick={() => setStep(step + 1)} className="shadow-lg shadow-primary/20 px-8">Next</Button>
         ) : (
           <Button
+            size="lg"
             onClick={generateCourseOutline}
-            disabled={loading}>
-            {loading ? <Loader className="animate-spin" /> : "Generate"}
+            disabled={loading}
+            className="shadow-lg shadow-primary/20 px-8">
+            {loading ? <Loader className="animate-spin mr-2" /> : null}
+            {loading ? "Generating..." : "Generate Course"}
           </Button>
         )}
       </div>

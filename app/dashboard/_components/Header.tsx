@@ -16,7 +16,7 @@ const Header = ({ onMenuClick }: HeaderProps) => {
   const path = usePathname();
   const isDashboard = path === "/dashboard";
   return (
-    <div className="p-4 md:p-5 shadow-sm border-b bg-background flex justify-between items-center sticky top-0 z-20">
+    <div className="p-4 md:p-5 border-b border-border/40 bg-background/60 backdrop-blur-md flex justify-between items-center sticky top-0 z-20">
       <div className="flex items-center gap-2">
         {isDashboard && (
           <Button variant="ghost" size="icon" className="md:hidden" onClick={onMenuClick}>

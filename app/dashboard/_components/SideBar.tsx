@@ -58,7 +58,7 @@ const SideBar = () => {
     },
   ];
   return (
-    <div className="h-full shadow-md p-5 bg-card border-r flex flex-col">
+    <div className="h-full p-5 flex flex-col">
       <div className="flex gap-2 items-center">
         <Image
           src={"/logo.svg"}
@@ -66,7 +66,7 @@ const SideBar = () => {
           width={40}
           height={40}
         />
-        <h2 className="font-bold text-2xl text-foreground">Easy Study</h2>
+        <h2 className="font-bold text-2xl text-gradient">Easy Study</h2>
       </div>
 
       <div className="mt-10 flex-1">
@@ -74,10 +74,10 @@ const SideBar = () => {
           <Link
             href={"/create"}
             className="w-full">
-            <Button className="w-full">+ Create New</Button>
+            <Button className="w-full"> + Create New</Button>
           </Link>
         ) : totalCourse >= 5 ? (
-          <div className="p-3 bg-muted/50 rounded-lg">
+          <div className="p-3 bg-muted/20 border border-white/10 rounded-lg">
             <h2 className="font-semibold text-xl text-foreground">Limit Reached</h2>
             <p className="text-sm text-muted-foreground">Upgrade to create more courses</p>
           </div>
@@ -85,37 +85,38 @@ const SideBar = () => {
           <Link
             href={"/create"}
             className="w-full">
-            <Button className="w-full">+ Create New</Button>
+            <Button className="w-full shadow-lg shadow-primary/20">+ Create New</Button>
           </Link>
         )}
 
-        <div className="mt-5 space-y-2">
+        <div className="mt-8 space-y-2">
           {menuList?.map((menu, index) => {
+            const isActive = pathname === menu.path;
             return (
               <div
                 key={index}
-                className={`flex gap-5 items-center p-3 rounded-lg cursor-pointer transition-colors ${
-                  pathname === menu.path 
-                    ? "bg-primary text-primary-foreground" 
-                    : "hover:bg-accent hover:text-accent-foreground text-foreground"
+                className={`flex gap-5 items-center p-3 rounded-xl cursor-pointer transition-all duration-300 hover:scale-[1.02] ${
+                  isActive 
+                    ? "bg-primary/10 text-primary border border-primary/10 shadow-sm" 
+                    : "hover:bg-white/5 hover:text-foreground text-foreground/80"
                 }`}
                 onClick={() => router.push(menu.path)}>
-                <menu.icon className={pathname === menu.path ? "text-primary-foreground" : ""} />
-                <h2>{menu.name}</h2>
+                <menu.icon className={isActive ? "text-primary animate-pulse" : ""} />
+                <h2 className="font-medium">{menu.name}</h2>
               </div>
             );
           })}
         </div>
       </div>
       {isPremium === false && (
-        <div className="border p-3 bg-muted rounded-lg w-full mt-auto">
-          <h2 className="text-lg mb-2 text-foreground">Available Credits: {5 - totalCourse}</h2>
-          <Progress value={(totalCourse / 5) * 100} className="h-2" />
-          <h2 className="text-sm text-muted-foreground mt-2">{Number(totalCourse)} out of 5 credits used</h2>
+        <div className="border border-white/10 p-4 bg-white/5 backdrop-blur-sm rounded-xl w-full mt-auto shadow-sm">
+          <h2 className="text-lg mb-2 text-foreground font-semibold">Available Credits</h2>
+          <Progress value={(totalCourse / 5) * 100} className="h-2 mb-2" />
+          <h2 className="text-sm text-muted-foreground">{5 - Number(totalCourse)} Credits Left</h2>
           <Link
             href={"/dashboard/upgrade"}
-            className="text-primary text-xs mt-3 block hover:underline">
-            Upgrade to create more
+            className="text-primary text-xs mt-3 block hover:underline font-medium">
+            Upgrade to Pro
           </Link>
         </div>
       )}
