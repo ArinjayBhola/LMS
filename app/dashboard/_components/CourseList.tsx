@@ -31,10 +31,10 @@ const CourseList = () => {
   };
 
   useEffect(() => {
-    if (userEmail && (!data || data.length === 0)) {
+    if (userEmail && data?.length == 0) {
       getCourseData();
     }
-  }, [dispatch, userEmail, data]);
+  }, [userEmail]); // Removed data from dependency array to prevent infinite loop
 
   return (
     <div className="mt-10">

@@ -7,7 +7,7 @@ import TopicInput from "./_components/TopicInput";
 import axios from "axios";
 import { useUser } from "@clerk/nextjs";
 import { v4 as uuidv4 } from "uuid";
-import { Loader } from "lucide-react";
+import { Loader, MoveLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
@@ -58,10 +58,10 @@ const Create = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-8 md:px-24 lg:px-36 mt-10 md:mt-20 max-w-5xl mx-auto glass rounded-3xl animate-in fade-in duration-500">
+    <div className="flex flex-col items-center p-8 md:px-24 lg:px-36 mt-4 md:mt-8 max-w-5xl mx-auto glass rounded-3xl animate-in fade-in duration-500">
+      <Button onClick={() => router.back()} className="fixed top-4 left-4 z-50"><MoveLeft/> Back</Button>
       <h2 className="font-extrabold text-3xl md:text-5xl text-gradient text-center mb-4">Start Building Your Personal Study Material</h2>
       <p className="text-muted-foreground text-xl text-center max-w-2xl">Fill all details in order to generate AI-powered study material tailored for you.</p>
-      
       <div className="mt-12 w-full">
         {step === 0 ? (
           <SelectOption selectedStudyType={(value) => handleUserInput("studyType", value)} />

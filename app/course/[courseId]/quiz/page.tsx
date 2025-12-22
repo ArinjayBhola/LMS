@@ -1,10 +1,12 @@
 "use client";
 
 import axios from "axios";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import StepProgress from "../_components/StepProgress";
 import QuizCardItem from "../_components/QuizCardItem";
+import { Button } from "@/components/ui/button";
+import { MoveLeft } from "lucide-react";
 
 interface Question {
   correctAnswer: string;
@@ -16,6 +18,7 @@ const Quiz = () => {
   const [isCorrectAnswer, setIsCorrectAnswer] = useState<boolean | null>(null);
   const [correctAns, setCorrectAns] = useState<string | null>(null);
   const { courseId } = useParams();
+  const router = useRouter();
 
   useEffect(() => {
     getQuiz();
@@ -45,6 +48,7 @@ const Quiz = () => {
 
   return (
     <div>
+      <Button onClick={() => router.back()}><MoveLeft/> Back</Button>
       <h2 className="font-bold text-2xl text-center mb-4"></h2>
       <StepProgress
         data={quiz}

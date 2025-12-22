@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
 import StepProgress from "../_components/StepProgress";
-import { Loader2 } from "lucide-react";
+import { Loader2, MoveLeft } from "lucide-react";
 import { fetchCourseContent } from "@/redux/slice/courseContentSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/appStore";
@@ -72,6 +72,7 @@ const Flashcard = () => {
 
   return (
     <div>
+      <Button onClick={() => router.back()}><MoveLeft/> Back</Button>
       <h2 className="font-bold text-2xl">Flashcard</h2>
       <p>Flashcard: The ultimate learning tool</p>
 

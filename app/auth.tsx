@@ -9,7 +9,7 @@ function Auth({ children }: { children: React.ReactNode }) {
   const emailAddress = user?.primaryEmailAddress?.emailAddress;
 
   useEffect(() => {
-    if (emailAddress) {
+    if (user && emailAddress) {
       checkIsNewUser();
     }
   }, [user]);

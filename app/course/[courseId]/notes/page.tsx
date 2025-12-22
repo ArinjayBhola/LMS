@@ -1,9 +1,11 @@
 "use client";
 
 import axios from "axios";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import StepProgress from "../_components/StepProgress";
+import { Button } from "@/components/ui/button";
+import { MoveLeft } from "lucide-react";
 
 export interface Note {
   notes: string;
@@ -13,6 +15,7 @@ const ViewNotes = () => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [stepCount, setStepCount] = useState(0);
   const { courseId } = useParams();
+  const router = useRouter();
 
   useEffect(() => {
     getNotes();
@@ -24,6 +27,7 @@ const ViewNotes = () => {
   return (
     notes && (
       <div>
+        <Button onClick={() => router.back()}><MoveLeft/> Back</Button>
         <div>
           <StepProgress
             data={notes}
