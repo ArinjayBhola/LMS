@@ -82,7 +82,7 @@ const CourseCard = ({ course, createdBy }: { course: Course; createdBy: string |
         <div className="fixed inset-0 bg-background/60 backdrop-blur-md flex justify-center items-center z-50 animate-in fade-in duration-200 p-4">
           <div className="glass border border-white/10 rounded-2xl p-6 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-200">
             <h3 className="text-xl font-bold text-foreground">Delete Course?</h3>
-            <p className="text-muted-foreground mt-2 text-sm">Are you sure you want to delete <span className="font-semibold text-foreground">"{course?.courseLayout?.courseTitle}"</span>? This action cannot be undone.</p>
+            <p className="text-muted-foreground mt-2 text-sm">Are you sure you want to delete <span className="font-semibold text-foreground">&quot;{course?.courseLayout?.courseTitle}&quot;</span>? This action cannot be undone.</p>
             <div className="mt-6 flex justify-end gap-3">
               <Button
                 variant="ghost"

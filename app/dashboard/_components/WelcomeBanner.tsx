@@ -20,7 +20,7 @@ const WelcomeBanner = () => {
       </div>
       <div className="relative z-10">
         <h2 className="font-bold text-3xl text-white mb-2">Hello, {user?.fullName}</h2>
-        <p className="text-blue-100/90 text-lg">Welcome Back, It's time to get back and start learning new courses</p>
+        <p className="text-blue-100/90 text-lg">Welcome Back, It&apos;s time to get back and start learning new courses</p>
       </div>
     </div>
   );
