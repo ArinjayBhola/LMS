@@ -86,8 +86,6 @@ export const generateCourseOutline = inngest.createFunction(
   async ({ event, step }) => {
     const { topic, courseId, courseType, createdBy, difficultyLevel, studyType } = event.data;
 
-    await step.sleep("Delay to prevent timeout issues", "5s");
-
     await step.run("Progress Checkpoint", async () => {
       console.log("Still working on AI generation...");
     });
