@@ -114,3 +114,13 @@
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500;
   }
 }
+
+/* Shimmer animation for skeleton loaders */
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

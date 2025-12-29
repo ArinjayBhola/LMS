@@ -16,8 +16,9 @@ import { Button } from "@/components/ui/button";
 import StepProgress from "../_components/StepProgress";
 import { Loader2, MoveLeft } from "lucide-react";
 import { fetchCourseContent } from "@/redux/slice/courseContentSlice";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/appStore";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/appStore";
+import { FlashcardSkeleton } from "@/components/SkeletonLoaders";
 
 const Flashcard = () => {
   const { courseId } = useParams();
@@ -26,8 +27,12 @@ const Flashcard = () => {
   const [api, setApi] = useState<CarouselApi>();
   const [stepCount, setStepCount] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  
+  // Try to get from cache first
+  const cachedContent = useSelector((store: RootState) => store.courseContent.cache[courseId as string]);
 
   useEffect(() => {
     if (!api) return;
@@ -38,10 +43,18 @@ const Flashcard = () => {
 
   useEffect(() => {
     getFlashCard();
-  }, []);
+  }, [cachedContent]);
 
   const getFlashCard = async () => {
+    setIsFetching(true);
     try {
+      // Try cache first
+      if (cachedContent?.data?.flashcards) {
+        setFlashcard(cachedContent.data.flashcards);
+        setIsFetching(false);
+        return;
+      }
+      
       const result = await axios.post("/api/study-type", {
         courseId: courseId,
         studyType: "Flashcard",
@@ -49,6 +62,8 @@ const Flashcard = () => {
       setFlashcard(result?.data?.content?.flashcards || result?.data?.content);
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsFetching(false);
     }
   };
 

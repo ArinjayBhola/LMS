@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/appStore";
-import { fetchCourse } from "@/redux/slice/getCourseList";
+import { fetchCourse, invalidateCache } from "@/redux/slice/getCourseList";
 
 interface FormData {
   studyType: string;
@@ -49,6 +49,8 @@ const Create = () => {
       setTimeout(() => {
         router.push("/dashboard");
         setLoading(false);
+        // Invalidate cache so new course appears immediately
+        dispatch(invalidateCache());
         dispatch(fetchCourse(user?.primaryEmailAddress?.emailAddress));
         toast("Your course content is generating, click on refresh button");
       }, 17000);

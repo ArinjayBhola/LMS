@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import MaterialCardItem from "./MaterialCardItem";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCourseContent } from "@/redux/slice/courseContentSlice";
-import { AppDispatch } from "@/redux/appStore";
+import { AppDispatch, RootState } from "@/redux/appStore";
 
 interface StudyTypeContent {
   [key: string]: { length: number };
@@ -22,18 +22,17 @@ const StudyMaterialSection = ({ courseId, course }: { courseId: string; course: 
   const [studyTypeContent, setStudyTypeContent] = useState<StudyTypeContent>({});
   const dispatch = useDispatch<AppDispatch>();
 
-  const courseContent = useSelector(
-    (state: { courseContent: { data: { [key: string]: StudyTypeContent } } }) =>
-      state.courseContent.data[courseId] || {},
-  );
+  // Access the cache structure correctly
+  const cachedContent = useSelector((state: RootState) => state.courseContent.cache[courseId]);
+  const courseContent = cachedContent?.data || {};
 
   useEffect(() => {
-    if (!courseContent || Object.keys(courseContent).length === 0) {
+    if (!cachedContent) {
       dispatch(fetchCourseContent(courseId));
-    } else {
-      setStudyTypeContent(courseContent);
+    } else if (cachedContent.data) {
+      setStudyTypeContent(cachedContent.data as unknown as StudyTypeContent);
     }
-  }, [dispatch, courseId, courseContent]);
+  }, [dispatch, courseId, cachedContent]);
 
   const list = [
     {

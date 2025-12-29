@@ -1,12 +1,15 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Loader, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { fetchCourse } from "@/redux/slice/getCourseList";
+import { removeCourseFromCache, forceFetchCourse } from "@/redux/slice/getCourseList";
 import { AppDispatch } from "@/redux/appStore";
 import { setCourseId } from "@/redux/slice/courseSlice";
 
@@ -25,31 +28,51 @@ const CourseCard = ({ course, createdBy }: { course: Course; createdBy: string |
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch: AppDispatch = useDispatch();
+  const router = useRouter();
 
   const date = (date: string) => {
     const dateString = new Date(date).toDateString().split(" ").slice(1).join(" ");
     return dateString;
   };
 
+  // Prefetch course page on hover for instant navigation
+  const handleMouseEnter = useCallback(() => {
+    router.prefetch(`/course/${course.courseId}`);
+  }, [router, course.courseId]);
+
   const deleteCourse = async (id: string) => {
     setIsLoading(true);
     try {
+      // Optimistic update: remove from cache immediately
+      dispatch(removeCourseFromCache(id));
+      
       const result = await axios.delete(`/api/delete-course?id=${id}`);
       if (result.data === "success") {
         toast("Course deleted successfully");
+      } else {
+        // If delete failed, refetch to restore correct state
+        dispatch(forceFetchCourse(createdBy));
       }
-      dispatch(fetchCourse(createdBy));
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong");
+      // Refetch on error to restore correct state
+      dispatch(forceFetchCourse(createdBy));
     } finally {
       setIsLoading(false);
       setIsModalOpen(false);
     }
   };
 
+  const handleViewCourse = () => {
+    dispatch(setCourseId(course.courseId));
+  };
+
   return (
-    <div className="glass-card p-5 rounded-2xl relative group">
+    <div 
+      className="glass-card p-5 rounded-2xl relative group"
+      onMouseEnter={handleMouseEnter}
+    >
       <div className="flex justify-between items-center mb-4">
         <div className="p-2 bg-white/10 rounded-xl">
             <Image
@@ -73,8 +96,8 @@ const CourseCard = ({ course, createdBy }: { course: Course; createdBy: string |
             onClick={() => setIsModalOpen(true)}>
             <Trash2 className="h-4 w-4" />
         </div>
-        <Link href={`/course/${course.courseId}`} className="flex-1 text-right">
-          <Button onClick={() => dispatch(setCourseId(course.courseId))} size="sm" className="w-full shadow-primary/20">View Course</Button>
+        <Link href={`/course/${course.courseId}`} className="flex-1 text-right" prefetch={true}>
+          <Button onClick={handleViewCourse} size="sm" className="w-full shadow-primary/20">View Course</Button>
         </Link>
       </div>
 
@@ -104,3 +127,4 @@ const CourseCard = ({ course, createdBy }: { course: Course; createdBy: string |
 };
 
 export default CourseCard;
+

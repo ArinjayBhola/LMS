@@ -5,7 +5,10 @@ import React, { useEffect, useState } from "react";
 import CourseIntroCard from "./_components/CourseIntroCard";
 import StudyMaterialSection from "./_components/StudyMaterialSection";
 import ChaptersList from "./_components/ChaptersList";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/appStore";
+import { fetchCourseContent } from "@/redux/slice/courseContentSlice";
+import { CourseIntroSkeleton, StudyMaterialSkeleton, ChapterListSkeleton } from "@/components/SkeletonLoaders";
 
 interface CourseDataType {
   courseData: {
@@ -15,30 +18,56 @@ interface CourseDataType {
   };
 }
 
+interface CourseType {
+  courseId: string;
+  courseLayout: {
+    courseTitle: string;
+    courseSummary: string;
+    chapters: [];
+  };
+}
+
 const Course = () => {
   const { courseId } = useParams() as { courseId: string };
   const { data } = useSelector((store: CourseDataType) => store.courseData);
   const id = useSelector((store: { course: { courseId: string } }) => store.course.courseId);
   const router = useRouter();
-  const [course, setCourse] = useState({
-    courseId: "",
-    courseLayout: {
-      courseTitle: "",
-      courseSummary: "",
-      chapters: [],
-    },
-  });
+  const dispatch = useDispatch<AppDispatch>();
+  const [course, setCourse] = useState<CourseType | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     getCourse();
-  }, [id]);
+    // Prefetch course content for faster sub-navigation
+    if (courseId) {
+      dispatch(fetchCourseContent(courseId));
+    }
+  }, [id, courseId]);
+
   const getCourse = async () => {
-    if (id) {
-      const filterCourse = data.filter((course: { courseId: string }) => course?.courseId === courseId);
-      setCourse(filterCourse[0]);
+    setIsLoading(true);
+    if (id || data.length > 0) {
+      const filterCourse = data.filter((c: { courseId: string }) => c?.courseId === courseId);
+      if (filterCourse.length > 0) {
+        setCourse(filterCourse[0]);
+      }
     } else {
       router.push("/dashboard");
+      return;
     }
+    setIsLoading(false);
   };
+
+  if (isLoading || !course) {
+    return (
+      <div>
+        <CourseIntroSkeleton />
+        <StudyMaterialSkeleton />
+        <ChapterListSkeleton />
+      </div>
+    );
+  }
+
   return (
     <div>
       <div>
@@ -54,3 +83,4 @@ const Course = () => {
 };
 
 export default Course;
+
