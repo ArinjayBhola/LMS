@@ -60,43 +60,71 @@ const Create = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-8 md:px-24 lg:px-36 mt-4 md:mt-8 max-w-5xl mx-auto glass rounded-3xl animate-in fade-in duration-500">
-      <Button onClick={() => router.back()} className="fixed top-4 left-4 z-50"><MoveLeft/> Back</Button>
-      <h2 className="font-extrabold text-3xl md:text-5xl text-gradient text-center mb-4">Start Building Your Personal Study Material</h2>
-      <p className="text-muted-foreground text-xl text-center max-w-2xl">Fill all details in order to generate AI-powered study material tailored for you.</p>
-      <div className="mt-12 w-full">
-        {step === 0 ? (
-          <SelectOption selectedStudyType={(value) => handleUserInput("studyType", value)} />
-        ) : (
-          <TopicInput
-            setDifficultyLevel={(value) => handleUserInput("difficultyLevel", value)}
-            setTopic={(value) => handleUserInput("topic", value)}
+    <div className="min-h-[80vh] flex flex-col items-center justify-center p-6 md:p-12 animate-in fade-in duration-700">
+      <div className="w-full max-w-4xl bg-card border border-border rounded-xl shadow-sm relative overflow-hidden p-8 md:p-12">
+        {/* Progress Bar */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-muted">
+          <div 
+            className="h-full bg-primary transition-all duration-500 ease-out" 
+            style={{ width: step === 0 ? '50%' : '100%' }}
           />
-        )}
-      </div>
+        </div>
 
-      <div className="flex justify-between w-full mt-16 pb-4">
-        <Button
-          variant={"ghost"}
-          size="lg"
-          onClick={() => setStep(step - 1)}
-          disabled={step === 0}
-          className="text-muted-foreground hover:text-foreground">
-          Previous
+        <Button 
+          variant="ghost"
+          size="sm"
+          onClick={() => router.back()} 
+          className="absolute top-6 left-6 z-50 rounded-lg font-medium text-muted-foreground hover:text-foreground"
+        >
+          <MoveLeft className="mr-2 h-4 w-4"/> Back
         </Button>
-        
-        {step === 0 ? (
-          <Button size="lg" onClick={() => setStep(step + 1)} className="shadow-lg shadow-primary/20 px-8">Next</Button>
-        ) : (
+
+        <div className="text-center space-y-3 mb-12 mt-10">
+          <h2 className="font-bold text-3xl md:text-4xl text-foreground tracking-tight">
+            Create New <span className="text-primary">Course</span>
+          </h2>
+          <p className="text-muted-foreground text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+            Specify your requirements and let our AI engineer the perfect study curriculum tailored to your goals.
+          </p>
+        </div>
+
+        <div className="w-full relative z-10">
+          {step === 0 ? (
+            <SelectOption selectedStudyType={(value) => handleUserInput("studyType", value)} />
+          ) : (
+            <TopicInput
+              setDifficultyLevel={(value) => handleUserInput("difficultyLevel", value)}
+              setTopic={(value) => handleUserInput("topic", value)}
+            />
+          )}
+        </div>
+
+        <div className="flex justify-between items-center w-full mt-12 pt-8 border-t border-border">
           <Button
-            size="lg"
-            onClick={generateCourseOutline}
-            disabled={loading}
-            className="shadow-lg shadow-primary/20 px-8">
-            {loading ? <Loader className="animate-spin mr-2" /> : null}
-            {loading ? "Generating..." : "Generate Course"}
+            variant="outline"
+            onClick={() => setStep(step - 1)}
+            disabled={step === 0}
+            className="rounded-lg px-8 transition-all disabled:opacity-30">
+            Previous
           </Button>
-        )}
+          
+          {step === 0 ? (
+            <Button 
+              onClick={() => setStep(step + 1)} 
+              className="bg-primary text-white font-semibold rounded-lg px-10 py-6 shadow-sm hover:shadow-md active:scale-95 transition-all text-base"
+            >
+              Next Step
+            </Button>
+          ) : (
+            <Button
+              onClick={generateCourseOutline}
+              disabled={loading}
+              className="bg-primary text-white font-semibold rounded-lg px-10 py-6 shadow-sm hover:shadow-md active:scale-95 transition-all text-base">
+              {loading ? <Loader className="animate-spin mr-2 h-5 w-5" /> : null}
+              {loading ? "Generating..." : "Generate Course"}
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

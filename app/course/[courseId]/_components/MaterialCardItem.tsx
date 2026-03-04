@@ -68,11 +68,7 @@ const MaterialCardItem = ({
       });
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 7000));
-    if (item.name === "Notes/ Chapters") {
-      window.location.reload();
-      dispatch(fetchCourseContent(course?.courseId));
-    }
+    await new Promise((resolve) => setTimeout(resolve, 3000));
     dispatch(fetchCourseContent(course?.courseId));
 
     setIsContentReady(true);
@@ -95,49 +91,52 @@ const MaterialCardItem = ({
   const check = questionAnswerButton === "Question/Answer";
 
   return (
-    <div className={`glass-card rounded-2xl p-6 flex flex-col items-center transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:border-primary/20 group ${!isContentReady && "opacity-80 grayscale-[0.5]"}`}>
-      <div className="w-full flex justify-end mb-2">
+    <div className={`bg-card border border-border/60 rounded-lg p-5 flex flex-col items-center transition-colors duration-200 hover:border-primary/40 group relative overflow-hidden ${!isContentReady && "opacity-80"}`}>
+      <div className="w-full flex justify-between items-center mb-6">
+        <div className={`w-2 h-2 rounded-full ${isContentReady ? "bg-primary" : "bg-muted"}`} />
         <span
-            className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide border ${
+            className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
             isContentReady 
-                ? "bg-green-500/10 text-green-600 border-green-500/20" 
+                ? "bg-primary/10 text-primary border-primary/20" 
                 : "bg-muted text-muted-foreground border-border"
             }`}>
-            {isContentReady ? "Ready" : "Not Ready"}
+            {isContentReady ? "Ready" : "Locked"}
         </span>
       </div>
 
-      <div className="p-4 bg-primary/5 rounded-full mb-4 group-hover:bg-primary/10 transition-colors">
+      <div className="mb-4 text-primary">
         <Image
             src={item.icon}
             alt={item.name}
-            width={60}
-            height={60}
-            className="drop-shadow-sm transition-transform group-hover:scale-110 duration-300"
+            width={32}
+            height={32}
+            className="opacity-90 group-hover:opacity-100 transition-opacity"
         />
       </div>
       
-      <h2 className="font-bold text-lg mt-2 text-center group-hover:text-primary transition-colors">{item.name}</h2>
-      <p className="text-muted-foreground text-sm text-center mt-2 line-clamp-2 min-h-[2.5rem]">{item.description}</p>
+      <div className="text-center space-y-1 mb-6">
+        <h2 className="font-bold text-sm text-foreground">{item.name}</h2>
+        <p className="text-muted-foreground text-[11px] leading-relaxed px-1 line-clamp-2">{item.description}</p>
+      </div>
       
-      {!isContentReady ? (
-        <Button
-          className="mt-6 w-full shadow-lg"
-          variant={"default"}
-          onClick={generateContent}
-          disabled={check || loading}>
-          {loading ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : null}
-          {loading ? "Generating..." : "Generate Content"}
-        </Button>
-      ) : (
-        <Link href={`/course/${course?.courseId}/${item.path}`} className="w-full mt-6">
+      <div className="w-full mt-auto">
+        {!isContentReady ? (
           <Button
-            className="w-full shadow-primary/20 hover:shadow-primary/40"
-            variant={"default"}>
-            View Material
+            className="w-full h-9 text-[11px] font-bold rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-all active:scale-[0.98]"
+            onClick={generateContent}
+            disabled={check || loading}>
+            {loading ? <Loader2 className="animate-spin mr-2 h-3.5 w-3.5" /> : null}
+            {loading ? "Generating..." : "Unlock"}
           </Button>
-        </Link>
-      )}
+        ) : (
+          <Link href={`/course/${course?.courseId}${item.path}`} className="w-full">
+            <Button
+              className="w-full h-9 text-[11px] font-bold rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-all active:scale-[0.98]">
+              Study
+            </Button>
+          </Link>
+        )}
+      </div>
     </div>
   );
 };

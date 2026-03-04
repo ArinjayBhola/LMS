@@ -5,59 +5,56 @@ import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-6 relative overflow-hidden">
+    <div className="flex min-h-screen flex-col items-center justify-center p-6 bg-background selection:bg-primary/20 selection:text-primary">
       <div className="absolute top-6 right-6 z-10">
         <ThemeToggle />
       </div>
       
-      <div className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-20 max-w-6xl w-full z-10">
-        <div className="relative w-40 h-40 md:w-64 md:h-64 shrink-0 animate-float" style={{ animationDelay: '0s' }}>
+      <div className="flex flex-col md:flex-row items-center justify-center gap-12 md:gap-16 max-w-5xl w-full z-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="relative w-36 h-36 md:w-56 md:h-56 shrink-0">
+          <div className="absolute inset-0 bg-primary/5 rounded-2xl border border-primary/10" />
           <Image
             src="/knowledge.png"
-            alt="knowledge"
-            className="-rotate-12 object-contain drop-shadow-2xl"
+            alt="learning"
+            className="object-contain p-4 transition-transform hover:scale-105 duration-500"
             fill
-            sizes="(max-width: 768px) 160px, 256px"
+            sizes="(max-width: 768px) 144px, 224px"
             priority
           />
         </div>
 
-        <div className="text-center flex-1 space-y-8">
-          <div className="space-y-4">
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter">
+        <div className="text-center md:text-left flex-1 space-y-6">
+          <div className="space-y-3">
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-foreground leading-[1.1]">
               AI-Powered <br className="hidden md:block"/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-500 to-pink-500 animate-gradient">Exam Prep</span>
+              Learning Hub
             </h1>
-            <p className="text-xl md:text-3xl font-light text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Your AI Companion. <br/>
-              <span className="font-medium text-foreground">Effortless Study Material</span> at Your Fingertips.
+            <p className="text-base md:text-lg font-medium text-muted-foreground max-w-lg leading-relaxed">
+              Your intelligent study companion. Generate comprehensive notes, flashcards, and quizzes instantly with the power of AI.
             </p>
           </div>
           
-          <div className="flex justify-center">
+          <div className="flex justify-center md:justify-start">
             <Link href={"/dashboard"}>
-              <Button size="lg" className="text-xl px-12 py-8 rounded-2xl shadow-2xl shadow-primary/30 transition-all hover:scale-105 hover:shadow-primary/50">
-                Get Started
+              <Button size="lg" className="h-11 px-8 rounded-lg shadow-sm hover:opacity-90 active:scale-[0.98] transition-all font-bold bg-primary text-primary-foreground text-sm tracking-wide">
+                Start Learning Free
               </Button>
             </Link>
           </div>
         </div>
 
-        <div className="relative w-40 h-40 md:w-64 md:h-64 shrink-0 animate-float" style={{ animationDelay: '2s' }}>
+        <div className="relative w-36 h-36 md:w-56 md:h-56 shrink-0 hidden lg:block">
+          <div className="absolute inset-0 bg-primary/5 rounded-2xl border border-primary/10" />
           <Image
             src="/code.png"
-            alt="code"
-            className="rotate-12 object-contain drop-shadow-2xl"
+            alt="coding"
+            className="object-contain p-4 transition-transform hover:scale-105 duration-500"
             fill
-            sizes="(max-width: 768px) 160px, 256px"
+            sizes="(max-width: 768px) 144px, 224px"
             priority
           />
         </div>
       </div>
-      
-      {/* Decorative gradient blobs */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl -z-10 animate-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl -z-10 animate-pulse" style={{ animationDelay: '1s' }} />
     </div>
   );
 }

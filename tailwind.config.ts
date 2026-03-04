@@ -10,6 +10,9 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        outfit: ["var(--font-outfit)", "sans-serif"],
+      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
@@ -22,7 +25,7 @@ export default {
           foreground: "hsl(var(--popover-foreground))",
         },
         primary: {
-          DEFAULT: "#305CDE",
+          DEFAULT: "#2563EB", // Solid Vibrant Blue (Standardized)
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {

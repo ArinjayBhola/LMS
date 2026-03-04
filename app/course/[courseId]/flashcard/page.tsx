@@ -26,8 +26,8 @@ const Flashcard = () => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [api, setApi] = useState<CarouselApi>();
   const [stepCount, setStepCount] = useState(0);
-  const [loading, setLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
+  const [isFinished, setIsFinished] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   
@@ -49,8 +49,9 @@ const Flashcard = () => {
     setIsFetching(true);
     try {
       // Try cache first
-      if (cachedContent?.data?.flashcards) {
-        setFlashcard(cachedContent.data.flashcards);
+      if (cachedContent?.data && 'flashcards' in cachedContent.data) {
+        setFlashcard((cachedContent.data as any).flashcards);
+        setIsFinished((cachedContent as any).finished);
         setIsFetching(false);
         return;
       }
@@ -59,7 +60,9 @@ const Flashcard = () => {
         courseId: courseId,
         studyType: "Flashcard",
       });
-      setFlashcard(result?.data?.content?.flashcards || result?.data?.content);
+      const data = result?.data?.content;
+      setFlashcard(data?.flashcards || data || []);
+      setIsFinished(result.data?.finished);
     } catch (error) {
       console.error(error);
     } finally {
@@ -67,75 +70,59 @@ const Flashcard = () => {
     }
   };
 
-  const updateFinishStatus = async () => {
-    setLoading(true);
-    try {
-      await axios.patch("/api/course-finish-status", {
-        courseId: courseId,
-        studyType: "Flashcard",
-      });
-      if (courseId) {
-        dispatch(fetchCourseContent(courseId as string));
-      }
-      router.push(`/course/${courseId}`);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
-    <div>
-      <Button onClick={() => router.back()}><MoveLeft/> Back</Button>
-      <h2 className="font-bold text-2xl">Flashcard</h2>
-      <p>Flashcard: The ultimate learning tool</p>
+    <div className="min-h-screen bg-background p-6 md:p-12 animate-in fade-in duration-500">
+      <div className="max-w-4xl mx-auto space-y-8">
+        <div className="flex items-center justify-between">
+          <Button 
+              variant="outline"
+              size="sm"
+              onClick={() => router.back()} 
+              className="rounded-lg font-semibold"
+          >
+            <MoveLeft className="mr-2 h-4 w-4"/> Back
+          </Button>
+          <div className="hidden md:block">
+            <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Study Mode: <span className="text-primary">Flashcards</span></h2>
+          </div>
+        </div>
 
-      <StepProgress
-        courseId={courseId}
-        data={flashcard}
-        setStepCount={(value: number) => setStepCount(value)}
-        stepCount={stepCount}
-        studyType="Flashcard"
-      />
+        <div className="bg-card border border-border rounded-xl p-6 md:p-10 shadow-sm relative overflow-hidden space-y-10">
+          <StepProgress
+            data={flashcard}
+            stepCount={stepCount}
+            setStepCount={(value: number) => setStepCount(value)}
+            courseId={courseId as string}
+            studyType="Flashcard"
+            isFinished={isFinished}
+          />
 
-      <div className="mt-10">
-        <Carousel setApi={setApi}>
-          <CarouselContent>
-            {flashcard?.map((flashcard, index) => (
-              <CarouselItem key={index}>
-                <FlashCardItem
-                  isFlipped={isFlipped}
-                  handleClick={() => setIsFlipped(!isFlipped)}
-                  flashcard={flashcard}
-                />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious
-            onClick={() => {
-              setStepCount((prev) => Math.max(prev - 1, 0));
-              api?.scrollPrev();
-            }}
-          />
-          <CarouselNext
-            onClick={() => {
-              setStepCount((prev) => Math.min(prev + 1, flashcard.length - 1));
-              api?.scrollNext();
-            }}
-          />
-        </Carousel>
+          <div className="flex justify-center items-center py-4">
+            {isFetching ? (
+              <FlashcardSkeleton />
+            ) : flashcard.length > 0 ? (
+              <Carousel setApi={setApi} className="w-full max-w-xl">
+                <CarouselContent>
+                  {flashcard.map((item, index) => (
+                    <CarouselItem key={index}>
+                      <FlashCardItem item={item} />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <div className="hidden md:block">
+                  <CarouselPrevious className="rounded-lg border-border hover:bg-muted" />
+                  <CarouselNext className="rounded-lg border-border hover:bg-muted" />
+                </div>
+              </Carousel>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">No flashcards available for this course.</p>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-
-      {stepCount === flashcard.length - 1 && (
-        <Button
-          variant={"default"}
-          className="absolute right-10 bottom-10 rounded-full px-4 p-5 shadow-2xl"
-          size={"default"}
-          onClick={updateFinishStatus}>
-          {loading ? <Loader2 className="animate-spin" /> : "Finish"}
-        </Button>
-      )}
     </div>
   );
 };

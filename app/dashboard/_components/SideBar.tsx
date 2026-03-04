@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { LayoutDashboard, Shield, UserCircle } from "lucide-react";
+import { ChevronLeft, ChevronRight, LayoutDashboard, Shield, UserCircle } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Progress } from "@/components/ui/progress";
@@ -12,7 +12,12 @@ import { useUser } from "@clerk/nextjs";
 import { fetchUserData } from "@/redux/slice/userSlice";
 import { AppDispatch, RootState } from "@/redux/appStore";
 
-const SideBar = () => {
+interface SideBarProps {
+  isCollapsed?: boolean;
+  onToggle?: () => void;
+}
+
+const SideBar = ({ isCollapsed = false, onToggle }: SideBarProps) => {
   const [isPremium, setIsPremium] = useState(false);
   const pathname = usePathname();
   const totalCourse = useSelector((store: RootState) => store.courseData.data.length);
@@ -46,78 +51,95 @@ const SideBar = () => {
       icon: LayoutDashboard,
       path: "/dashboard",
     },
-    {
+    ...(!isPremium ? [{
       name: "Upgrade",
       icon: Shield,
       path: "/dashboard/upgrade",
-    },
+    }] : []),
     {
       name: "Profile",
       icon: UserCircle,
       path: "/dashboard/profile",
     },
   ];
+
   return (
-    <div className="h-full p-5 flex flex-col">
-      <div className="flex gap-2 items-center">
-        <Image
-          src={"/logo.svg"}
-          alt="logo"
-          width={40}
-          height={40}
-        />
-        <h2 className="font-bold text-2xl text-gradient">Easy Study</h2>
+    <div className="h-full flex flex-col bg-background transition-all duration-300">
+      <div className={`p-4 ${isCollapsed ? "px-2" : "px-4"}`}>
+        <div className={`flex items-center justify-between ${isCollapsed ? "flex-col gap-4" : ""}`}>
+          <div className="flex gap-2 items-center px-1">
+            <div className="bg-primary/10 p-1.5 rounded-md shrink-0">
+              <Image
+                src={"/logo.svg"}
+                alt="logo"
+                width={20}
+                height={20}
+                className="w-5 h-5"
+              />
+            </div>
+            {!isCollapsed && <h2 className="font-bold text-lg text-foreground tracking-tight whitespace-nowrap">Easy Study</h2>}
+          </div>
+          
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={onToggle}
+            className="hidden md:flex h-8 w-8 rounded-lg hover:bg-muted"
+          >
+            {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          </Button>
+        </div>
+
+        <div className="mt-6">
+          {totalCourse >= 5 && !isPremium ? (
+            <Button className="w-full h-9 font-semibold text-xs" disabled>
+              {isCollapsed ? "!" : "Limit Reached"}
+            </Button>
+          ) : (
+            <Link href={"/create"} className="w-full">
+              <Button className={`w-full h-9 font-semibold text-xs ${isCollapsed ? "px-0" : ""}`}>
+                {isCollapsed ? "+" : "+ Create New"}
+              </Button>
+            </Link>
+          )}
+        </div>
       </div>
 
-      <div className="mt-10 flex-1">
-        {isPremium ? (
-          <Link
-            href={"/create"}
-            className="w-full">
-            <Button className="w-full"> + Create New</Button>
-          </Link>
-        ) : totalCourse >= 5 ? (
-          <div className="p-3 bg-muted/20 border border-white/10 rounded-lg">
-            <h2 className="font-semibold text-xl text-foreground">Limit Reached</h2>
-            <p className="text-sm text-muted-foreground">Upgrade to create more courses</p>
-          </div>
-        ) : (
-          <Link
-            href={"/create"}
-            className="w-full">
-            <Button className="w-full shadow-lg shadow-primary/20">+ Create New</Button>
-          </Link>
-        )}
-
-        <div className="mt-8 space-y-2">
+      <div className={`flex-1 py-2 ${isCollapsed ? "px-2" : "px-4"}`}>
+        <div className="space-y-1">
           {menuList?.map((menu, index) => {
             const isActive = pathname === menu.path;
             return (
               <div
                 key={index}
-                className={`flex gap-5 items-center p-3 rounded-xl cursor-pointer transition-all duration-300 hover:scale-[1.02] ${
+                className={`flex items-center rounded-md cursor-pointer transition-colors group ${
+                  isCollapsed ? "justify-center p-2" : "gap-3 px-3 py-2"
+                } ${
                   isActive 
-                    ? "bg-primary/10 text-primary border border-primary/10 shadow-sm" 
-                    : "hover:bg-white/5 hover:text-foreground text-foreground/80"
+                    ? "bg-secondary text-foreground" 
+                    : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
                 }`}
                 onClick={() => router.push(menu.path)}>
-                <menu.icon className={isActive ? "text-primary animate-pulse" : ""} />
-                <h2 className="font-medium">{menu.name}</h2>
+                <menu.icon className={`shrink-0 ${isCollapsed ? "w-5 h-5" : "w-4 h-4"} ${isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground"}`} />
+                {!isCollapsed && <h2 className="text-sm font-medium whitespace-nowrap">{menu.name}</h2>}
               </div>
             );
           })}
         </div>
       </div>
-      {isPremium === false && (
-        <div className="border border-white/10 p-4 bg-white/5 backdrop-blur-sm rounded-xl w-full mt-auto shadow-sm">
-          <h2 className="text-lg mb-2 text-foreground font-semibold">Available Credits</h2>
-          <Progress value={(totalCourse / 5) * 100} className="h-2 mb-2" />
-          <h2 className="text-sm text-muted-foreground">{5 - Number(totalCourse)} Credits Left</h2>
-          <Link
-            href={"/dashboard/upgrade"}
-            className="text-primary text-xs mt-3 block hover:underline font-medium">
-            Upgrade to Pro
-          </Link>
+
+      {!isCollapsed && !isPremium && (
+        <div className="p-4 mt-auto animate-in fade-in duration-300">
+          <div className="p-3 bg-secondary/30 rounded-md border border-border/50 space-y-2">
+            <div className="flex justify-between items-center text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+              <span>Usage</span>
+              <span className="text-foreground">{totalCourse} / 5</span>
+            </div>
+            <Progress value={(totalCourse / 5) * 100} className="h-1 rounded-full bg-secondary overflow-hidden" />
+            <Link href={"/dashboard/upgrade"} className="block text-center text-[10px] font-bold text-primary hover:underline underline-offset-4 tracking-wide pt-1">
+              UPGRADE PLAN
+            </Link>
+          </div>
         </div>
       )}
     </div>

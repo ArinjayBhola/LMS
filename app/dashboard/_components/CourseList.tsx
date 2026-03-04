@@ -49,18 +49,20 @@ const CourseList = () => {
   }, [userEmail]);
 
   return (
-    <div className="mt-10">
-      <h2 className="font-bold text-2xl flex justify-between items-center text-foreground">
-        Your Study Material
+    <div className="mt-12">
+      <div className="flex justify-between items-center mb-8">
+        <h2 className="font-black text-3xl text-foreground tracking-tight">
+          Your <span className="text-primary italic">Materials</span>
+        </h2>
         <Button
-          variant={"outline"}
-          className="border-primary text-primary hover:bg-primary/10"
           onClick={handleRefresh}
-          disabled={isRefreshing}>
+          disabled={isRefreshing}
+          className="bg-secondary text-secondary-foreground hover:bg-secondary/80 border-none shadow-sm rounded-xl px-6 py-5 font-bold transition-all active:scale-95"
+        >
           <RefreshCw className={`mr-2 h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} /> 
           {isRefreshing ? 'Refreshing...' : 'Refresh'}
         </Button>
-      </h2>
+      </div>
 
       {isLoading ? (
         <CourseListSkeleton count={6} />

@@ -7,21 +7,28 @@ import React from "react";
 const WelcomeBanner = () => {
   const { user } = useUser();
   return (
-    <div className="p-8 bg-gradient-to-r from-primary to-purple-600 rounded-2xl glass flex items-center gap-6 shadow-xl relative overflow-hidden group">
-      <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-white/20 transition-all duration-700" />
-      <div className="relative z-10 shrink-0">
+    <div className="p-6 bg-primary rounded-xl text-primary-foreground flex items-center justify-between shadow-sm relative overflow-hidden group">
+      <div className="relative z-10 space-y-1">
+        <h2 className="text-2xl font-bold tracking-tight">
+          Welcome back, {user?.fullName || "Student"}
+        </h2>
+        <p className="text-sm text-primary-foreground/80 font-medium max-w-lg">
+          Track your progress and continue your learning journey.
+        </p>
+      </div>
+      
+      <div className="relative z-10 hidden sm:flex items-center justify-center p-3 bg-white/10 rounded-lg backdrop-blur-sm">
         <Image
           src={"/laptop.png"}
           alt="laptop"
-          width={100}
-          height={100}
-          className="drop-shadow-lg animate-float"
+          width={40}
+          height={40}
+          className="object-contain"
+          priority
         />
       </div>
-      <div className="relative z-10">
-        <h2 className="font-bold text-3xl text-white mb-2">Hello, {user?.fullName}</h2>
-        <p className="text-blue-100/90 text-lg">Welcome Back, It&apos;s time to get back and start learning new courses</p>
-      </div>
+
+      <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110 duration-500" />
     </div>
   );
 };

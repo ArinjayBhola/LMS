@@ -17,6 +17,7 @@ const Quiz = () => {
   const [stepCount, setStepCount] = useState(0);
   const [isCorrectAnswer, setIsCorrectAnswer] = useState<boolean | null>(null);
   const [correctAns, setCorrectAns] = useState<string | null>(null);
+  const [isFinished, setIsFinished] = useState(false);
   const { courseId } = useParams();
   const router = useRouter();
 
@@ -35,6 +36,7 @@ const Quiz = () => {
       studyType: "Quiz",
     });
     setQuiz(result.data.content?.questions);
+    setIsFinished(result.data?.finished);
   };
 
   const checkAnswer = (userAnswer: string, currentQuestion: Question) => {
@@ -47,39 +49,64 @@ const Quiz = () => {
   };
 
   return (
-    <div>
-      <Button onClick={() => router.back()}><MoveLeft/> Back</Button>
-      <h2 className="font-bold text-2xl text-center mb-4"></h2>
-      <StepProgress
-        data={quiz}
-        stepCount={stepCount}
-        setStepCount={(value: number) => setStepCount(value)}
-        courseId={courseId}
-        studyType="Quiz"
-      />
+    <div className="min-h-screen bg-background p-6 md:p-12 animate-in fade-in duration-500">
+      <div className="max-w-4xl mx-auto space-y-8">
+        <div className="flex items-center justify-between">
+          <Button 
+              variant="outline"
+              size="sm"
+              onClick={() => router.back()} 
+              className="rounded-lg font-semibold"
+          >
+            <MoveLeft className="mr-2 h-4 w-4"/> Back
+          </Button>
+          <div className="hidden md:block">
+            <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Study Mode: <span className="text-primary">Quiz</span></h2>
+          </div>
+        </div>
 
-      <div>
-        {quiz && (
-          <QuizCardItem
-            quiz={quiz[stepCount]}
-            userSelectedOption={(value) => checkAnswer(value, quiz[stepCount])}
+        <div className="bg-card border border-border rounded-xl p-6 md:p-10 shadow-sm relative overflow-hidden space-y-8">
+          <StepProgress
+            data={quiz}
+            stepCount={stepCount}
+            setStepCount={(value: number) => setStepCount(value)}
+            courseId={courseId as string}
+            studyType="Quiz"
+            isFinished={isFinished}
           />
-        )}
+
+          <div className="py-4">
+            {quiz && (
+              <QuizCardItem
+                quiz={quiz[stepCount]}
+                userSelectedOption={(value) => checkAnswer(value, quiz[stepCount])}
+              />
+            )}
+          </div>
+
+          <div className="min-h-[100px] flex items-center justify-center">
+            {isCorrectAnswer === true && (
+              <div className="w-full bg-primary/5 border border-primary/20 rounded-xl p-6 animate-in zoom-in-95 duration-500 text-center relative overflow-hidden">
+                <div className="absolute top-0 right-0 px-3 py-1 bg-primary text-white text-[10px] font-bold uppercase tracking-wider rounded-bl-lg">
+                  Bravo!
+                </div>
+                <h2 className="font-bold text-xl text-primary mb-1">That's Correct!</h2>
+                <p className="text-primary/60 text-xs font-medium uppercase tracking-wide">You're getting closer to mastery.</p>
+              </div>
+            )}
+
+            {isCorrectAnswer === false && (
+              <div className="w-full bg-destructive/5 border border-destructive/20 rounded-xl p-6 animate-in shake-in duration-500 text-center relative overflow-hidden">
+                <div className="absolute top-0 right-0 px-3 py-1 bg-destructive text-white text-[10px] font-bold uppercase tracking-wider rounded-bl-lg">
+                  Incorrect
+                </div>
+                <h2 className="font-bold text-xl text-destructive mb-1">Incorrect Answer</h2>
+                <p className="text-destructive/60 text-xs font-medium uppercase tracking-wide">Try again, you've got this!</p>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-
-      {isCorrectAnswer === true && (
-        <div className="border p-3 border-green-700 bg-green-200 rounded-lg">
-          <h2 className="font-bold text-lg text-green-600">Correct</h2>
-          <p className="text-green-600">Your answer is correct</p>
-        </div>
-      )}
-
-      {isCorrectAnswer === false && (
-        <div className="border p-3 border-red-700 bg-red-200 rounded-lg">
-          <h2 className="font-bold text-lg text-red-600">Incorrect</h2>
-          <p className="text-red-600">Correct anser is: {correctAns}</p>
-        </div>
-      )}
     </div>
   );
 };

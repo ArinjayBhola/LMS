@@ -1,13 +1,15 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import CourseIntroCard from "./_components/CourseIntroCard";
 import StudyMaterialSection from "./_components/StudyMaterialSection";
 import ChaptersList from "./_components/ChaptersList";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/appStore";
 import { fetchCourseContent } from "@/redux/slice/courseContentSlice";
+import { fetchCourse } from "@/redux/slice/getCourseList";
+import { useUser } from "@clerk/nextjs";
 import { CourseIntroSkeleton, StudyMaterialSkeleton, ChapterListSkeleton } from "@/components/SkeletonLoaders";
 
 interface CourseDataType {
@@ -35,28 +37,42 @@ const Course = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [course, setCourse] = useState<CourseType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { user } = useUser();
+  const userEmail = user?.primaryEmailAddress?.emailAddress;
 
-  useEffect(() => {
-    getCourse();
-    // Prefetch course content for faster sub-navigation
-    if (courseId) {
-      dispatch(fetchCourseContent(courseId));
-    }
-  }, [id, courseId]);
-
-  const getCourse = async () => {
-    setIsLoading(true);
-    if (id || data.length > 0) {
+  const getCourse = useCallback(async () => {
+    if (data && data.length > 0) {
       const filterCourse = data.filter((c: { courseId: string }) => c?.courseId === courseId);
       if (filterCourse.length > 0) {
         setCourse(filterCourse[0]);
+        setIsLoading(false);
+      } else {
+        // Only redirect if we have data but it's not the one we want
+        router.push("/dashboard");
       }
-    } else {
-      router.push("/dashboard");
-      return;
     }
-    setIsLoading(false);
-  };
+  }, [data, courseId, router]);
+
+  useEffect(() => {
+    if (userEmail && data.length === 0) {
+      dispatch(fetchCourse(userEmail));
+    }
+  }, [userEmail, data.length, dispatch]);
+
+  useEffect(() => {
+    if (data.length > 0) {
+      getCourse();
+    }
+  }, [data, getCourse]);
+
+  useEffect(() => {
+    if (courseId) {
+      dispatch(fetchCourseContent(courseId));
+    }
+  }, [courseId, dispatch]);
+
+  const cachedContent = useSelector((state: RootState) => state.courseContent.cache[courseId]);
+  const studyTypeContent = cachedContent?.data || {};
 
   if (isLoading || !course) {
     return (
@@ -71,7 +87,7 @@ const Course = () => {
   return (
     <div>
       <div>
-        <CourseIntroCard course={course} />
+        <CourseIntroCard course={course} studyTypeContent={studyTypeContent} />
         <StudyMaterialSection
           courseId={courseId}
           course={course}

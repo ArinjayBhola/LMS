@@ -1,5 +1,6 @@
 import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
+import { BookOpen } from "lucide-react";
 import React from "react";
 import { useSelector } from "react-redux";
 
@@ -11,39 +12,49 @@ interface Course {
   };
 }
 
-const CourseIntroCard = ({ course }: { course: Course }) => {
-  const selector = useSelector((app: { course: { course: { key: boolean } } }) => app.course.course);
-  const value = Object.values(selector);
-  const trueCount = value?.filter((item) => item === true).length;
-  const percentage = (trueCount / value.length) * 100;
+const CourseIntroCard = ({ course, studyTypeContent }: { course: any; studyTypeContent: any }) => {
+  const notesCount = studyTypeContent?.notes?.length || 0;
+  const finishedCount = studyTypeContent?.notes?.filter((n: any) => n.finished).length || 0;
+  const percentage = notesCount > 0 ? (finishedCount / notesCount) * 100 : 0;
+
   return (
-    <div className="flex gap-6 items-center p-8 glass-card rounded-2xl mb-8 relative overflow-hidden">
-      <div className="relative shrink-0">
-        <Image
-          src={"/knowledge.png"}
-          alt="Other"
-          width={80}
-          height={80}
-          className="drop-shadow-lg"
-        />
-      </div>
-      <div className="flex-1 z-10">
-        <h2 className="font-bold text-3xl text-foreground mb-2">{course.courseLayout.courseTitle}</h2>
-        <p className="text-muted-foreground text-lg mb-4 max-w-2xl">{course.courseLayout.courseSummary}</p>
-        <div className="flex items-center gap-4">
-          <div className="flex-1 max-w-sm">
-             <Progress
-                value={percentage}
-                className="h-2"
-             />
-          </div>
-          <span className="text-sm font-medium text-muted-foreground">{Math.round(percentage)}% Complete</span>
+    <div className="bg-card border border-border/60 p-6 rounded-lg shadow-sm animate-in fade-in duration-500">
+      <div className="flex flex-col md:flex-row items-start gap-6">
+        <div className="bg-primary/10 p-2.5 rounded-md text-primary shrink-0">
+          <BookOpen className="w-6 h-6" />
         </div>
-        <h2 className="mt-4 text-sm font-semibold text-primary/80 bg-primary/10 inline-block px-3 py-1 rounded-full border border-primary/20">
-            {course.courseLayout.chapters.length} Chapters
-        </h2>
+        <div className="flex-1 space-y-4">
+          <div className="space-y-1.5">
+            <h2 className="text-xl md:text-2xl font-bold text-foreground tracking-tight leading-tight">
+              {course?.courseLayout?.courseTitle}
+            </h2>
+            <p className="text-xs md:text-sm text-muted-foreground leading-relaxed max-w-2xl">
+              {course?.courseLayout?.courseSummary}
+            </p>
+          </div>
+
+          <div className="flex flex-col md:flex-row items-center gap-6 pt-1">
+            <div className="w-full md:w-48 space-y-1.5">
+               <div className="flex justify-between text-[10px] font-bold text-muted-foreground tracking-tight">
+                  <span className="uppercase">Progress</span>
+                  <span>{Math.round(percentage)}%</span>
+               </div>
+               <Progress
+                  value={percentage}
+                  className="h-1 bg-secondary overflow-hidden"
+               />
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <span className="px-2 py-0.5 bg-secondary text-secondary-foreground text-[10px] font-bold rounded-md border border-border/50">
+                 {course?.courseLayout?.chapters?.length} Chapters
+              </span>
+              <span className="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded-md border border-primary/10">
+                 {finishedCount} / {notesCount} Completed
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-primary/5 to-transparent -z-10" />
     </div>
   );
 };

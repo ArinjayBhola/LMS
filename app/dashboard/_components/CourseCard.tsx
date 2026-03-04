@@ -70,51 +70,70 @@ const CourseCard = ({ course, createdBy }: { course: Course; createdBy: string |
 
   return (
     <div 
-      className="glass-card p-5 rounded-2xl relative group"
+      className="bg-card border border-border/60 p-4 rounded-lg relative group transition-all duration-200 hover:shadow-sm hover:border-primary/40"
       onMouseEnter={handleMouseEnter}
     >
-      <div className="flex justify-between items-center mb-4">
-        <div className="p-2 bg-white/10 rounded-xl">
+      <div className="flex justify-between items-start mb-3">
+        <div className="p-2 bg-secondary rounded-md">
             <Image
             src={"/knowledge.png"}
             alt="other"
-            width={40}
-            height={40}
-            className="group-hover:scale-110 transition-transform duration-300"
+            width={24}
+            height={24}
+            className="transition-transform duration-300 group-hover:scale-105"
             />
         </div>
-        <span className="text-xs font-medium px-3 py-1 bg-primary/10 text-primary rounded-full border border-primary/20">
+        <span className="text-[10px] font-bold text-muted-foreground/80 px-2 py-0.5 bg-muted rounded-md border border-border/50">
             {date(course.createdAt)}
         </span>
       </div>
-      <h2 className="font-bold text-lg text-foreground line-clamp-1 group-hover:text-primary transition-colors">{course?.courseLayout?.courseTitle}</h2>
-      <p className="text-sm line-clamp-2 text-muted-foreground mt-2 min-h-[2.5rem]">{course?.courseLayout?.courseSummary}</p>
+      
+      <div className="space-y-1.5">
+        <h2 className="font-bold text-base text-foreground line-clamp-1 tracking-tight">
+          {course?.courseLayout?.courseTitle}
+        </h2>
+        <p className="text-xs line-clamp-2 text-muted-foreground leading-relaxed min-h-[2.5rem]">
+          {course?.courseLayout?.courseSummary}
+        </p>
+      </div>
 
-      <div className="mt-4 flex justify-end items-center gap-2">
-        <div
-            className="p-2 rounded-lg cursor-pointer text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all opacity-0 group-hover:opacity-100"
+      <div className="mt-5 flex items-center gap-2">
+        <Link href={`/course/${course.courseId}`} className="flex-1" prefetch={true}>
+          <Button 
+            onClick={handleViewCourse} 
+            className="w-full h-9 bg-primary text-primary-foreground hover:opacity-90 rounded-lg font-bold text-xs shadow-sm transition-all active:scale-[0.98]"
+          >
+            View Study Plan
+          </Button>
+        </Link>
+        <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/5 transition-colors opacity-0 group-hover:opacity-100"
             onClick={() => setIsModalOpen(true)}>
             <Trash2 className="h-4 w-4" />
-        </div>
-        <Link href={`/course/${course.courseId}`} className="flex-1 text-right" prefetch={true}>
-          <Button onClick={handleViewCourse} size="sm" className="w-full shadow-primary/20">View Course</Button>
-        </Link>
+        </Button>
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-background/60 backdrop-blur-md flex justify-center items-center z-50 animate-in fade-in duration-200 p-4">
-          <div className="glass border border-white/10 rounded-2xl p-6 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-200">
-            <h3 className="text-xl font-bold text-foreground">Delete Course?</h3>
-            <p className="text-muted-foreground mt-2 text-sm">Are you sure you want to delete <span className="font-semibold text-foreground">&quot;{course?.courseLayout?.courseTitle}&quot;</span>? This action cannot be undone.</p>
-            <div className="mt-6 flex justify-end gap-3">
+        <div className="fixed inset-0 bg-background/60 backdrop-blur-sm flex justify-center items-center z-50 animate-in fade-in duration-200 p-4">
+          <div className="bg-card border border-border rounded-xl p-6 w-full max-w-sm shadow-lg animate-in zoom-in-95 duration-200">
+            <div className="mb-6 space-y-2">
+              <h3 className="text-xl font-bold text-foreground tracking-tight">Delete Course</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Are you sure you want to delete <span className="font-bold text-foreground italic">&quot;{course?.courseLayout?.courseTitle}&quot;</span>? This action cannot be undone.
+              </p>
+            </div>
+            <div className="flex gap-2">
               <Button
                 variant="ghost"
+                className="flex-1 h-10 text-xs font-bold rounded-lg"
                 onClick={() => setIsModalOpen(false)}>
                 Cancel
               </Button>
               <Button
                 variant="destructive"
-                className="shadow-destructive/20"
+                className="flex-1 h-10 text-xs font-bold rounded-lg shadow-sm"
                 onClick={() => deleteCourse(course.courseId)}>
                 {isLoading ? <Loader className="animate-spin h-4 w-4" /> : "Delete"}
               </Button>

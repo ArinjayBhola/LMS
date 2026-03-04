@@ -34,7 +34,7 @@ const StudyMaterialSection = ({ courseId, course }: { courseId: string; course: 
     }
   }, [dispatch, courseId, cachedContent]);
 
-  const list = [
+  const MaterialList = [
     {
       name: "Notes/ Chapters",
       description: "Read notes and chapters",
@@ -66,13 +66,15 @@ const StudyMaterialSection = ({ courseId, course }: { courseId: string; course: 
   ];
 
   return (
-    <div className="mt-5">
-      <h2 className="font-medium text-xl">Study Material</h2>
-      <div className="grid grid-cols-2 md:grid-cols-4 mt-5 gap-5 m-3">
-        {list.map((item, index) => (
+    <div className="mt-10">
+      <h2 className="text-base font-bold text-foreground mb-4">
+        Study Toolkit
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {MaterialList.map((item, index) => (
           <MaterialCardItem
-            key={index}
             item={item}
+            key={index}
             studyTypeContent={studyTypeContent}
             course={course}
           />
