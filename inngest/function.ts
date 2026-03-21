@@ -3,6 +3,7 @@ import { inngest } from "./client";
 import { eq } from "drizzle-orm";
 import { STUDY_MATERIAL_TABLE, STUDY_TYPE_CONTENT_TABLE, USER_TABLE } from "@/config/schema";
 import { courseOutlineModel, generateQuizModel, generateStudyTypeContentModel } from "@/config/AiModel";
+import { YoutubeTranscript } from "youtube-transcript";
 
 export const helloWorld = inngest.createFunction(
   { id: "hello-world" },
@@ -107,6 +108,57 @@ export const generateCourseOutline = inngest.createFunction(
       await db.insert(STUDY_MATERIAL_TABLE).values({
         courseLayout: aiResult,
         title: topic,
+        courseId,
+        courseType: studyType,
+        createdBy,
+        difficultyLevel,
+      });
+    });
+  },
+);
+
+export const generateCourseFromYoutube = inngest.createFunction(
+  { id: "generateCourseFromYoutube" },
+  { event: "course.generateFromYoutube" },
+  async ({ event, step }) => {
+    const { videoId, courseId, courseType, createdBy, difficultyLevel, studyType } = event.data;
+
+    // Step 1: Fetch YouTube transcript
+    const transcript = await step.run("Fetch YouTube Transcript", async () => {
+      const transcriptItems = await YoutubeTranscript.fetchTranscript(videoId);
+      const fullText = transcriptItems.map((item: { text: string }) => item.text).join(" ");
+      // Limit transcript to ~12000 chars to stay within token limits
+      return fullText.slice(0, 12000);
+    });
+
+    // Step 2: Generate course outline from transcript
+    const aiResult = await step.run("Generate Course from Transcript", async () => {
+      const prompt = `Based on the following YouTube video transcript, create a comprehensive JSON study material.
+The course type is "${courseType}" and difficulty level is "${difficultyLevel}".
+
+Generate a well-structured course with:
+- A clear courseTitle based on the video content
+- A courseSummary
+- Logical chapters (each with chapterNumber, chapterTitle, chapterSummary, emoji)
+- Topics per chapter (each with topicTitle and details array)
+
+YouTube Transcript:
+"""
+${transcript}
+"""
+
+Return ONLY valid JSON in the exact same format as a standard course outline.`;
+
+      const result = await courseOutlineModel.sendMessage(prompt);
+      return JSON.parse(result.response.text());
+    });
+
+    // Step 3: Save to DB
+    await step.run("Save YouTube Course to DB", async () => {
+      const title = aiResult.courseTitle || "YouTube Course";
+      await db.insert(STUDY_MATERIAL_TABLE).values({
+        courseLayout: aiResult,
+        title,
         courseId,
         courseType: studyType,
         createdBy,

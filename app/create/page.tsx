@@ -23,6 +23,7 @@ interface FormData {
 const Create = () => {
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState([]);
+  const [youtubeUrl, setYoutubeUrl] = useState("");
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -35,27 +36,45 @@ const Create = () => {
     }));
   };
 
+  const isYoutubeMode = youtubeUrl.length > 0;
+
   const generateCourseOutline = async () => {
     toast("Processing... This may take some time, please wait.", { closeButton: true, duration: 7000 });
     const courseId = uuidv4();
     setLoading(true);
 
     try {
-      await axios.post("/api/generateCourseOutline", {
-        courseId: courseId,
-        ...formData,
-        createdBy: user?.primaryEmailAddress?.emailAddress,
-      });
+      if (isYoutubeMode) {
+        // YouTube flow
+        await axios.post("/api/generate-from-youtube", {
+          youtubeUrl,
+          courseId,
+          ...formData,
+          createdBy: user?.primaryEmailAddress?.emailAddress,
+        });
+      } else {
+        // Normal topic flow
+        await axios.post("/api/generateCourseOutline", {
+          courseId,
+          ...formData,
+          createdBy: user?.primaryEmailAddress?.emailAddress,
+        });
+      }
+
       setTimeout(() => {
         router.push("/dashboard");
         setLoading(false);
-        // Invalidate cache so new course appears immediately
         dispatch(invalidateCache());
         dispatch(fetchCourse(user?.primaryEmailAddress?.emailAddress));
         toast("Your course content is generating, click on refresh button");
       }, 17000);
-    } catch (error) {
-      console.log(error);
+    } catch (error: unknown) {
+      setLoading(false);
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        toast.error("Invalid YouTube URL. Please check and try again.");
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
     }
   };
 
@@ -64,16 +83,16 @@ const Create = () => {
       <div className="w-full max-w-4xl bg-card border border-border rounded-xl shadow-sm relative overflow-hidden p-8 md:p-12">
         {/* Progress Bar */}
         <div className="absolute top-0 left-0 w-full h-1 bg-muted">
-          <div 
-            className="h-full bg-primary transition-all duration-500 ease-out" 
+          <div
+            className="h-full bg-primary transition-all duration-500 ease-out"
             style={{ width: step === 0 ? '50%' : '100%' }}
           />
         </div>
 
-        <Button 
+        <Button
           variant="ghost"
           size="sm"
-          onClick={() => router.back()} 
+          onClick={() => router.back()}
           className="absolute top-6 left-6 z-50 rounded-lg font-medium text-muted-foreground hover:text-foreground"
         >
           <MoveLeft className="mr-2 h-4 w-4"/> Back
@@ -95,6 +114,7 @@ const Create = () => {
             <TopicInput
               setDifficultyLevel={(value) => handleUserInput("difficultyLevel", value)}
               setTopic={(value) => handleUserInput("topic", value)}
+              setYoutubeUrl={setYoutubeUrl}
             />
           )}
         </div>
@@ -107,10 +127,10 @@ const Create = () => {
             className="rounded-lg px-8 transition-all disabled:opacity-30">
             Previous
           </Button>
-          
+
           {step === 0 ? (
-            <Button 
-              onClick={() => setStep(step + 1)} 
+            <Button
+              onClick={() => setStep(step + 1)}
               className="bg-primary text-white font-semibold rounded-lg px-10 py-6 shadow-sm hover:shadow-md active:scale-95 transition-all text-base"
             >
               Next Step
