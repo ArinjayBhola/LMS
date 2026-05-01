@@ -37,6 +37,7 @@ const Flashcard = () => {
   useEffect(() => {
     if (!api) return;
     api.on("select", () => {
+      setStepCount(api.selectedScrollSnap());
       setIsFlipped(false);
     });
   }, [api]);

@@ -29,7 +29,7 @@ interface CourseType {
   };
 }
 
-const Course = () => {
+const CourseDetailsPage = () => {
   const { courseId } = useParams() as { courseId: string };
   const { data } = useSelector((store: CourseDataType) => store.courseData);
   const id = useSelector((store: { course: { courseId: string } }) => store.course.courseId);
@@ -92,11 +92,11 @@ const Course = () => {
           courseId={courseId}
           course={course}
         />
-        <ChaptersList course={course} />
+        <ChaptersList course={course} notes={studyTypeContent?.notes} />
       </div>
     </div>
   );
 };
 
-export default Course;
+export default CourseDetailsPage;
 

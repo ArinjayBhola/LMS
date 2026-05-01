@@ -1,9 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { Course } from "./getCourseList";
+export interface CourseContent {
+  notes?: any[];
+  flashcard?: any;
+  quiz?: any;
+  qa?: any;
+}
 
 interface ContentCache {
-  data: Course;
+  data: CourseContent;
   lastFetched: number;
 }
 
@@ -18,7 +23,7 @@ interface CourseContentState {
 const CACHE_VALIDITY_MS = 5 * 60 * 1000;
 
 export const fetchCourseContent = createAsyncThunk<
-  { courseId: string; data: Course },
+  { courseId: string; data: CourseContent },
   string,
   { state: { courseContent: CourseContentState } }
 >(
@@ -43,7 +48,7 @@ export const fetchCourseContent = createAsyncThunk<
 );
 
 // Force fetch regardless of cache
-export const forceFetchCourseContent = createAsyncThunk<{ courseId: string; data: Course }, string>(
+export const forceFetchCourseContent = createAsyncThunk<{ courseId: string; data: CourseContent }, string>(
   "forceFetchCourseContent",
   async (courseId: string) => {
     const result = await axios.post("/api/study-type", { courseId, studyType: "ALL" });

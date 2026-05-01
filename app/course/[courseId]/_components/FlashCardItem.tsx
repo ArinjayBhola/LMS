@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
 interface FlashCardItemProps {
   front: string;
@@ -8,9 +8,14 @@ interface FlashCardItemProps {
 }
 
 const FlashCardItem = ({ item }: { item: FlashCardItemProps }) => {
+  const [isFlipped, setIsFlipped] = useState(false);
+
   return (
-    <div className="flex items-center justify-center p-4 h-[350px] md:h-[450px] [perspective:1000px] group cursor-pointer">
-      <div className="relative w-full h-full transition-all duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
+    <div 
+      className="flex items-center justify-center p-4 h-[350px] md:h-[450px] [perspective:1000px] cursor-pointer"
+      onClick={() => setIsFlipped(!isFlipped)}
+    >
+      <div className={`relative w-full h-full transition-all duration-500 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}>
         {/* Front Side */}
         <div className="absolute inset-0 [backface-visibility:hidden] bg-card border border-border rounded-xl shadow-sm flex flex-col items-center justify-center p-8 text-center">
             <span className="text-[10px] font-bold text-primary uppercase tracking-wider mb-4">Question</span>
@@ -32,5 +37,6 @@ const FlashCardItem = ({ item }: { item: FlashCardItemProps }) => {
     </div>
   );
 };
+
 
 export default FlashCardItem;

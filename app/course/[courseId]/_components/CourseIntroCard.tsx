@@ -13,9 +13,25 @@ interface Course {
 }
 
 const CourseIntroCard = ({ course, studyTypeContent }: { course: any; studyTypeContent: any }) => {
-  const notesCount = studyTypeContent?.notes?.length || 0;
-  const finishedCount = studyTypeContent?.notes?.filter((n: any) => n.finished).length || 0;
-  const percentage = notesCount > 0 ? (finishedCount / notesCount) * 100 : 0;
+  const tools = [
+    { 
+      name: "Notes", 
+      isFinished: studyTypeContent?.notes?.length > 0 && studyTypeContent?.notes?.every((n: any) => n.finished) 
+    },
+    { 
+      name: "Flashcard", 
+      isFinished: studyTypeContent?.flashcard?.finished 
+    },
+    { 
+      name: "Quiz", 
+      isFinished: studyTypeContent?.quiz?.finished 
+    },
+  ];
+
+  const finishedCount = tools.filter(t => t.isFinished).length;
+  const totalTools = tools.length;
+  const percentage = (finishedCount / totalTools) * 100;
+
 
   return (
     <div className="bg-card border border-border/60 p-6 rounded-lg shadow-sm animate-in fade-in duration-500">
@@ -49,8 +65,9 @@ const CourseIntroCard = ({ course, studyTypeContent }: { course: any; studyTypeC
                  {course?.courseLayout?.chapters?.length} Chapters
               </span>
               <span className="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded-md border border-primary/10">
-                 {finishedCount} / {notesCount} Completed
+                 {finishedCount} / {totalTools} Tools Completed
               </span>
+
             </div>
           </div>
         </div>

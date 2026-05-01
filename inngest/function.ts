@@ -5,19 +5,30 @@ import { STUDY_MATERIAL_TABLE, STUDY_TYPE_CONTENT_TABLE, USER_TABLE } from "@/co
 import { courseOutlineModel, generateQuizModel, generateStudyTypeContentModel } from "@/config/AiModel";
 import { YoutubeTranscript } from "youtube-transcript";
 
+const cleanAIResponse = (text: string) => {
+  return text.replace(/```json/g, "").replace(/```/g, "").trim();
+};
+
+
 export const helloWorld = inngest.createFunction(
-  { id: "hello-world" },
-  { event: "test/hello.world" },
-  async ({ event, step }) => {
+  { id: "hello-world", triggers: [{ event: "test/hello.world" }] },
+  async ({ event, step }: { event: any; step: any }) => {
+
+
+
+
     await step.sleep("wait-a-moment", "1s");
     return { message: `Hello ${event.data.email}!` };
   },
 );
 
 export const createNewUser = inngest.createFunction(
-  { id: "create-user" },
-  { event: "user.create" },
-  async ({ event, step }) => {
+  { id: "create-user", triggers: [{ event: "user.create" }] },
+  async ({ event, step }: { event: any; step: any }) => {
+
+
+
+
     const { user } = event.data;
 
     // GET EVENT DATA
@@ -47,10 +58,10 @@ export const createNewUser = inngest.createFunction(
 );
 
 export const generateStudyTypeContent = inngest.createFunction(
-  { id: "generateStudyContent" },
-  { event: "studyType.Content" },
+  { id: "generateStudyContent", triggers: [{ event: "studyType.Content" }] },
+  async ({ event, step }: { event: any; step: any }) => {
 
-  async ({ event, step }) => {
+
     const { prompt, recordId, studyType } = event.data;
 
     const aiResult = await step.run("Generate Flash Card Content using AI", async () => {
@@ -58,8 +69,9 @@ export const generateStudyTypeContent = inngest.createFunction(
         studyType === "FlashCard"
           ? await generateStudyTypeContentModel.sendMessage(prompt)
           : await generateQuizModel.sendMessage(prompt);
-      const aiResponse = JSON.parse(result.response.text());
+      const aiResponse = JSON.parse(cleanAIResponse(result.response.text()));
       return aiResponse;
+
     });
     // save result
 
@@ -82,9 +94,12 @@ export const generateStudyTypeContent = inngest.createFunction(
 );
 
 export const generateCourseOutline = inngest.createFunction(
-  { id: "generateCourse" },
-  { event: "course.generate" },
-  async ({ event, step }) => {
+  { id: "generateCourse", triggers: [{ event: "course.generate" }] },
+  async ({ event, step }: { event: any; step: any }) => {
+
+
+
+
     const { topic, courseId, courseType, createdBy, difficultyLevel, studyType } = event.data;
 
     await step.run("Progress Checkpoint", async () => {
@@ -92,13 +107,15 @@ export const generateCourseOutline = inngest.createFunction(
     });
 
     const aiResult = await step.run("Generate Course using AI", async () => {
-      const prompt = `Create a JSON study material for ${topic} (${courseType}, ${difficultyLevel}). Include:
+      const prompt = `Create a JSON study material for ${topic} (${studyType}, ${difficultyLevel}). Include:
         - Course summary
         - Chapters (title, summary, emoji)
         - Topics per chapter.`;
+
       const result = await courseOutlineModel.sendMessage(prompt);
-      return JSON.parse(result.response.text());
+      return JSON.parse(cleanAIResponse(result.response.text()));
     });
+
 
     await step.run("Checkpoint: AI Done", async () => {
       console.log("AI response received, saving to DB...");
@@ -112,15 +129,20 @@ export const generateCourseOutline = inngest.createFunction(
         courseType: studyType,
         createdBy,
         difficultyLevel,
+        status: "Ready",
       });
+
     });
   },
 );
 
 export const generateCourseFromYoutube = inngest.createFunction(
-  { id: "generateCourseFromYoutube" },
-  { event: "course.generateFromYoutube" },
-  async ({ event, step }) => {
+  { id: "generateCourseFromYoutube", triggers: [{ event: "course.generateFromYoutube" }] },
+  async ({ event, step }: { event: any; step: any }) => {
+
+
+
+
     const { videoId, courseId, courseType, createdBy, difficultyLevel, studyType } = event.data;
 
     // Step 1: Fetch YouTube transcript
@@ -134,7 +156,8 @@ export const generateCourseFromYoutube = inngest.createFunction(
     // Step 2: Generate course outline from transcript
     const aiResult = await step.run("Generate Course from Transcript", async () => {
       const prompt = `Based on the following YouTube video transcript, create a comprehensive JSON study material.
-The course type is "${courseType}" and difficulty level is "${difficultyLevel}".
+The course type is "${studyType}" and difficulty level is "${difficultyLevel}".
+
 
 Generate a well-structured course with:
 - A clear courseTitle based on the video content
@@ -150,8 +173,9 @@ ${transcript}
 Return ONLY valid JSON in the exact same format as a standard course outline.`;
 
       const result = await courseOutlineModel.sendMessage(prompt);
-      return JSON.parse(result.response.text());
+      return JSON.parse(cleanAIResponse(result.response.text()));
     });
+
 
     // Step 3: Save to DB
     await step.run("Save YouTube Course to DB", async () => {
@@ -163,7 +187,9 @@ Return ONLY valid JSON in the exact same format as a standard course outline.`;
         courseType: studyType,
         createdBy,
         difficultyLevel,
+        status: "Ready",
       });
+
     });
   },
 );
